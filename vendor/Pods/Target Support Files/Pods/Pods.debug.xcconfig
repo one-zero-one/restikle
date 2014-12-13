@@ -1,0 +1,6 @@
+GCC_PREPROCESSOR_DEFINITIONS = $(inherited) COCOAPODS=1
+HEADER_SEARCH_PATHS = "${PODS_ROOT}/Headers/Public" "${PODS_ROOT}/Headers/Public/ABPadLockScreen" "${PODS_ROOT}/Headers/Public/HexColors" "${PODS_ROOT}/Headers/Public/JMImageCache" "${PODS_ROOT}/Headers/Public/NSData+Base64" "${PODS_ROOT}/Headers/Public/NSData+MD5Digest" "${PODS_ROOT}/Headers/Public/SVProgressHUD" "${PODS_ROOT}/Headers/Public/TSMessages"
+OTHER_CFLAGS = $(inherited) -isystem "${PODS_ROOT}/Headers/Public" -isystem "${PODS_ROOT}/Headers/Public/ABPadLockScreen" -isystem "${PODS_ROOT}/Headers/Public/HexColors" -isystem "${PODS_ROOT}/Headers/Public/JMImageCache" -isystem "${PODS_ROOT}/Headers/Public/NSData+Base64" -isystem "${PODS_ROOT}/Headers/Public/NSData+MD5Digest" -isystem "${PODS_ROOT}/Headers/Public/SVProgressHUD" -isystem "${PODS_ROOT}/Headers/Public/TSMessages"
+OTHER_LDFLAGS = -ObjC -l"Pods-ABPadLockScreen" -l"Pods-HexColors" -l"Pods-JMImageCache" -l"Pods-NSData+Base64" -l"Pods-NSData+MD5Digest" -l"Pods-SVProgressHUD" -l"Pods-TSMessages" -framework "QuartzCore"
+OTHER_LIBTOOLFLAGS = $(OTHER_LDFLAGS)
+PODS_ROOT = ${SRCROOT}/Pods
