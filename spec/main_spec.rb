@@ -1,4 +1,4 @@
-describe "Application 'tillless-uikit'" do
+describe "Application 'tillless-restikle'" do
   before do
     @app = UIApplication.sharedApplication
   end

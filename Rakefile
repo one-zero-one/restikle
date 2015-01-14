@@ -4,16 +4,12 @@ require 'motion/project/template/ios'
 require 'motion/project/template/gem/gem_tasks'
 require 'rubygems'
 require 'bundler'
-# require 'ib'
-# require 'motion-cocoapods'
-# require 'bubble-wrap'
-# require 'bubble-wrap/all'
-# require 'sugarcube-all'
-# require 'motion-layout'
-# require 'motion-kit'
-# require 'motion-kit-events'
-# require 'ProMotion'
-# require './lib/tillless-uikit'
+require 'ib'
+require 'motion-cocoapods'
+require 'bubble-wrap'
+require 'bubble-wrap/all'
+require 'sugarcube-all'
+require './lib/tillless-restikle'
 
 begin
   Bundler.require
@@ -23,8 +19,8 @@ rescue Exception => e
 end
 
 Motion::Project::App.setup do |app|
-  app.name                 = 'T-UIKit'
-  app.identifier           = 'com.tillless.tillless-uikit-R100'
+  app.name                 = 'T-Restikle'
+  app.identifier           = 'com.tillless.tillless-restikle-R100'
   app.codesign_certificate = 'iPhone Developer: Matthew Sinclair (J9CF96HZ49)'
   app.provisioning_profile = 'provisioning/iOS_Team_Provisioning_Profile_.mobileprovision'
 
@@ -50,16 +46,9 @@ Motion::Project::App.setup do |app|
   app.interface_orientations = [:portrait]
 
   if ARGV.include? 'spec'
-    app.name = 'T-UIKit Spec'
+    app.name = 'T-Restikle Spec'
   end
 
   app.pods do
-    pod 'NSData+MD5Digest'
-    pod 'NSData+Base64'
-    pod 'SVProgressHUD'
-    pod 'JMImageCache'
-    pod 'SVProgressHUD'
-    pod 'TSMessages'
-    pod 'ABPadLockScreen'
   end
 end

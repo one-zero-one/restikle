@@ -1,0 +1,9 @@
+                                    api_promotion GET    /api/promotions/:id(.:format)                                               spree/api/promotions#show {:format=>"json"}
+                               api_product_images GET    /api/products/:product_id/images(.:format)                                  spree/api/images#index {:format=>"json"}
+                                                  POST   /api/products/:product_id/images(.:format)                                  spree/api/images#create {:format=>"json"}
+                            new_api_product_image GET    /api/products/:product_id/images/new(.:format)                              spree/api/images#new {:format=>"json"}
+                           edit_api_product_image GET    /api/products/:product_id/images/:id/edit(.:format)                         spree/api/images#edit {:format=>"json"}
+                                api_product_image GET    /api/products/:product_id/images/:id(.:format)                              spree/api/images#show {:format=>"json"}
+                                                  PATCH  /api/products/:product_id/images/:id(.:format)                              spree/api/images#update {:format=>"json"}
+                                                  PUT    /api/products/:product_id/images/:id(.:format)                              spree/api/images#update {:format=>"json"}
+                                                  DELETE /api/products/:product_id/images/:id(.:format)                              spree/api/images#destroy {:format=>"json"}

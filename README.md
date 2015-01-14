@@ -6,7 +6,7 @@ Collection of iOS UIKit UIView classes for Tillless apps
 
 Add this line to your application's Gemfile:
 
-    gem 'tillless-uikit'
+    gem 'tillless-restikle'
 
 And then execute:
 
@@ -14,7 +14,7 @@ And then execute:
 
 Or install it yourself as:
 
-    $ gem install tillless-uikit
+    $ gem install tillless-restikle
 
 ## Usage
 
