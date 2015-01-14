@@ -5,6 +5,7 @@ require 'motion/project/template/gem/gem_tasks'
 require 'rubygems'
 require 'bundler'
 require 'ib'
+require 'cdq'
 require 'motion-cocoapods'
 require 'bubble-wrap'
 require 'bubble-wrap/all'
@@ -50,5 +51,8 @@ Motion::Project::App.setup do |app|
   end
 
   app.pods do
+    pod 'RestKit'
+    # pod 'RestKit', '~> 0.20.3'
   end
 end
+task :"build:simulator" => :"schema:build"
