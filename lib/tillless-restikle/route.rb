@@ -2,6 +2,10 @@ module Restikle
   class Route
     attr_accessor :name, :verb, :path, :ctrl, :remove_from_paths
 
+    # Create a new route. If args is a string, attempt to parse it into :name, :verb,
+    # :path and :ctrl. If args is a hash, :string must be specified as the value to
+    # parse. If :remove_from_paths is speciifed, then that string will be removed
+    # uniformly from each route path.
     def self.new(args={})
       super(args).tap do |r|
         if args.instance_of? String
@@ -17,6 +21,7 @@ module Restikle
       end
     end
 
+    # Extra :name, :verb, :path and :ctrl from str.
     def parse_route_string(str)
       elements = str.split
       elements.unshift('') if elements.size == 4
