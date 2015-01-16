@@ -75,6 +75,7 @@ describe Restikle::Instrumentor do
       mappings = instr.restkit_mappings_for(entity.entity_name)
       mappings.should != nil
       mappings.each do |mapping|
+        mapping[:route].should != nil
         mapping[:request_descriptor].should != nil
         mapping[:request_descriptor][:request_mapping].class.should == RKObjectMapping
         mapping[:request_descriptor][:object_class].should          == entity.entity_name
