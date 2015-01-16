@@ -36,7 +36,7 @@ module Restikle
         data.split(/\n/).each do |line|
           args[:string] = line
           route = Restikle::Route.new(args)
-          route.name = @last_name if route.name.nil?
+          route.name = @last_name if route.name.empty?
           @routes << route
           @last_name = route.name
         end
@@ -80,24 +80,39 @@ module Restikle
       end
     end
 
-    # Build a RestKit mapper for entity, where entity is known to Restkile following
-    # loading of routes and schema files
-    def request_mapper_for(entity_to_map)
+    # Build a RestKit request and response mapping for each path for entity, where entity_name
+    # is known to Restkile following loading of routes and schema files. Response is an array
+    # of mappings, with each item: [ { route: {}, request_description: {}, response_descriptor: {} }]
+    def restkit_mappings_for(entity_name)
       mappings = []
-      entity = @entities.find {|e| e.entity_name == entity_to_map}
+      entity = @entities.find {|e| e.entity_name == entity_name}
       if entity
         @routes.each do |route|
-          if route.path.index(entity.entity_name)
+          if route.path.index(entity.entity_name.underscore)
             mappings << {
-              response_mapper: RKObjectMapping.requestMapping,
-              object_class:    entity.entity_name,
-              root_key_path:   route.path,
-              method:          route.verb
+              route: route,
+              request_descriptor: {
+                request_mapping:  RKObjectMapping.requestMapping,
+                object_class:     entity.entity_name,
+                root_key_path:    route.path,
+                method:           rk_request_method_for(route.verb)
+              },
+              response_descriptor: {
+                response_mapping: mapping_for_entity_for_name(entity.entity_name),
+                path_pattern:     route.path,
+                key_path:         nil,
+                method:           rk_request_method_for(route.verb),
+                status_codes:     RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)
+              }
             }
           end
         end
       end
       mappings
+    end
+
+    def mapping_for_entity_for_name(name)
+      "RKEntityMapping.mappingForEntityForName(#{name}, inManagedObjectStore: store)"
     end
 
     # Dump out the paths registred in @routes for each of the @entities
@@ -111,6 +126,18 @@ module Restikle
         end
       end
       nil
+    end
+
+    RK_REQUEST_METHODS = {
+      get:     RKRequestMethodGET,
+      post:    RKRequestMethodPOST,
+      put:     RKRequestMethodPUT,
+      deleete: RKRequestMethodDELETE,
+      patch:   RKRequestMethodPATCH
+    }
+    # Return a RestKit constant for a HTTP verb string (or symbol)
+    def rk_request_method_for(method)
+      RK_REQUEST_METHODS[method.to_s.strip.downcase.to_sym]
     end
   end
 end

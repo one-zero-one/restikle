@@ -34,7 +34,7 @@ describe Restikle::Route do
   it 'should remove a string from the path if supplied' do
     args = { remove_from_paths: '/api/' }
     @rails_routes_string.split(/\n/).each do |line|
-      args[:line] = line
+      args[:string] = line
       route = Restikle::Route.new(args)
       route.valid?.should == true
       route.path.index(args[:remove_from_paths]).should == nil

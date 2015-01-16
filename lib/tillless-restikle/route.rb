@@ -12,7 +12,7 @@ module Restikle
           r.verb              = args[:verb]
           r.path              = args[:path]
           r.ctrl              = args[:ctrl]
-          r.name, r.verb, r.path, r.ctrl = r.parse_route_string(args[:line]) if args[:line]
+          r.name, r.verb, r.path, r.ctrl = r.parse_route_string(args[:string]) if args[:string]
         end
       end
     end
