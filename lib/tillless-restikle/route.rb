@@ -1,16 +1,18 @@
 module Restikle
   class Route
-    attr_accessor :name, :verb, :path, :ctrl
+    attr_accessor :name, :verb, :path, :ctrl, :remove_from_paths
 
     def self.new(args={})
       super(args).tap do |r|
         if args.instance_of? String
           r.name, r.verb, r.path, r.ctrl = r.parse_route_string(args)
         else
-          r.name = args[:name]
-          r.verb = args[:verb]
-          r.path = args[:path]
-          r.ctrl = args[:ctrl]
+          r.remove_from_paths = args[:remove_from_paths]
+          r.name              = args[:name]
+          r.verb              = args[:verb]
+          r.path              = args[:path]
+          r.ctrl              = args[:ctrl]
+          r.name, r.verb, r.path, r.ctrl = r.parse_route_string(args[:line]) if args[:line]
         end
       end
     end
@@ -23,9 +25,17 @@ module Restikle
       verb ||= ''
       path ||= ''
       ctrl ||= ''
-      [ name.strip, verb.strip, path.gsub(/\(\.:format\)/, '').strip, ctrl.strip ]
+      path.gsub!(@remove_from_paths, '') if @remove_from_paths
+      path.gsub!(/\(\.:format\)/, '')
+      [ name.strip, verb.strip, path.strip, ctrl.strip ]
     end
 
+    # True if the route has valid values for name, verb, path and ctrl
+    def valid?
+      ! (@name.nil? || @verb.nil? || @path.nil? || @ctrl.nil?)
+    end
+
+    # Human readable output
     def to_s
       "#{@name}, #{@verb}, #{@path}, #{@ctrl}"
     end

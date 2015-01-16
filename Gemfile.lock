@@ -7,6 +7,7 @@ PATH
       cocoapods (~> 0.36.0.beta.1)
       ib
       motion-cocoapods
+      motion-support
       sugarcube
       xcodeproj
 
@@ -61,6 +62,9 @@ GEM
     molinillo (0.2.0)
     motion-cocoapods (1.7.0)
       cocoapods (>= 0.34)
+    motion-require (0.2.0)
+    motion-support (0.2.6)
+      motion-require (>= 0.0.6)
     motion-yaml (1.4)
     multi_json (1.10.1)
     nap (0.8.0)

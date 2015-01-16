@@ -10,6 +10,7 @@ require 'motion-cocoapods'
 require 'bubble-wrap'
 require 'bubble-wrap/all'
 require 'sugarcube-all'
+require 'motion-support/inflector'
 require './lib/tillless-restikle'
 
 begin
@@ -52,7 +53,6 @@ Motion::Project::App.setup do |app|
 
   app.pods do
     pod 'RestKit'
-    # pod 'RestKit', '~> 0.20.3'
   end
 end
 task :"build:simulator" => :"schema:build"
