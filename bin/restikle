@@ -1,8 +1,8 @@
 #!/usr/bin/env ruby
 
-require "erb"
-require "optparse"
-require "rubygems"
-require "tillless-restikle/cli"
+require 'erb'
+require 'optparse'
+require 'rubygems'
+require 'tillless-restikle/cli'
 
 Restikle::CommandLine.run_all

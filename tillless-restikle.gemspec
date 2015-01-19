@@ -3,7 +3,7 @@ require File.expand_path('../lib/tillless-restikle/version', __FILE__)
 
 Gem::Specification.new do |spec|
   spec.name          = "tillless-restikle"
-  spec.version       = Tillless::Restikle::VERSION
+  spec.version       = Restikle::VERSION
   spec.authors       = ["tillless", "matthewsinclair"]
   spec.email         = ["matthew.sinclair@tillless.com"]
   spec.description   = %q{Easily work with Rails routes and schema in an iOS RestKit+CDQ project.}
@@ -22,7 +22,7 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency 'motion-support'       #, '~> 0.2.6'
   # spec.add_dependency 'cocoapods'            #, '~> 0.35.0'
-  spec.add_dependency 'cocoapods'            , '~> 0.36.0.beta.1'
+  spec.add_dependency 'cocoapods'            #, '~> 0.36.0.beta.1'
   spec.add_dependency 'xcodeproj'            #, '~> 0.20.2'
   spec.add_dependency 'motion-cocoapods'     #, '~> 1.7.0'
   spec.add_dependency 'bubble-wrap'          #, '~> 1.7.1'
@@ -30,6 +30,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'cdq'                  #, '~> 0.1.11'
   spec.add_dependency 'sugarcube'            #, '~> 3.0.7'
 
-  spec.add_development_dependency 'bundler'  #, '~> 1.7.9'
-  spec.add_development_dependency 'rake'     #, '~> 10.4.2'
+  spec.add_development_dependency 'bundler'        #, '~> 1.7.9'
+  spec.add_development_dependency 'rake'           #, '~> 10.4.2'
+  spec.add_development_dependency 'activesupport'  #, '~> 4.2.0'
 end
