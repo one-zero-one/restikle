@@ -91,7 +91,7 @@ module Restikle
           out << "\n #{ent.name}"
         end
       end
-      NSLog out
+      out
     end
 
     # Build a RestKit request and response mapping for each path for entity, where entity_name
@@ -125,9 +125,26 @@ module Restikle
       mappings
     end
 
-    def mapping_for_entity_for_name(name)
-      "RKEntityMapping.mappingForEntityForName(#{name}, inManagedObjectStore: store)"
+    def mapping_for_entity_for_name(entity_name)
+      RKEntityMapping.mappingForEntityForName(entity_name, inManagedObjectStore: store).tap do |m|
+        m.addAttributeMappingsFromArray(attributes_for_entity(entity_name))
+      end
     end
+
+    def attributes_for_entity(entity_name)
+      attrs  = []
+      entity = CDQ.cdq.models.current.entities.find {|e| e.name == entity_name}
+      entity.attributesByName.each { |attr| attrs << attr[0] } if entity
+      attrs
+    end
+
+    def manager
+      Restikle::ResourceManager.manager
+    end
+    def store
+      Restikle::ResourceManager.store
+    end
+
 
     # Dump out the paths registred in @routes for each of the @entities
     def log_paths_for_entities

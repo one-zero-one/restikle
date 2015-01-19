@@ -52,10 +52,13 @@ Options:
 
   class TranslateAction < CommandLine
     HELP_TEXT = %{Usage:
-      restikle [options] translate [-r remove_from_entities] [-i rails_schema] [-o cdq_schema]
-      Parse a Rails schema file and output a CDQ-compatible schema file. If [-i rails_schama]
-      or [-o cdq_schema] are not specified, then output goes to STDOUT. If [-r remove_from_entities]
-      is provided, then that text will be striped from each entity name.
+      restikle [options] translate [-r remove_from_entities] [-i rails_schema] [-o cdq_schema] [-m models]
+      Parse a Rails schema file and output a CDQ-compatible schema file.
+      Where:
+        -r remove_from_entities      # text will be striped from each entity name
+        -i rails_schema              # input file for Rails schema
+        -o cdq_schema                # output file for CDQ schema
+        -m models                    # output file for Ruby model classes
 
 Options:
     }
@@ -65,15 +68,19 @@ Options:
         opts.program_name = 'restikle translate'
 
         opts.on('-r', '--remove', 'Remove text from each table name') do
-          @remove_from_entities = ARGV.shift
+          @remove_from_entities = ARGV.shift if ARGV.size > 0
         end
 
         opts.on('-i', '--input', 'Rails schema file to parse, stdin if blank') do
-          @schema_input_file = ARGV.shift
+          @schema_input_file = ARGV.shift if ARGV.size > 0
         end
 
         opts.on('-o', '--output', 'Name of cdq schema file to write, stdout if blank') do
-          @schema_output_file = ARGV.shift
+          @schema_output_file = ARGV.shift if ARGV.size > 0
+        end
+
+        opts.on('-m', '--models', 'Name of Ruby app models file to write, ignored if blank') do
+          @models_output_file = ARGV.shift if ARGV.size > 0
         end
       end
     end
@@ -86,19 +93,25 @@ Options:
         STDERR.puts "   @schema_input_file: #{@schema_input_file}"
         STDERR.puts "  @schema_output_file: #{@schema_output_file}"
         STDERR.puts "@remove_from_entities: #{@remove_from_entities}"
+        STDERR.puts "  @models_output_file: #{@models_output_file}"
       end
 
       unless singleton_options_passed
+        parser = Restikle::Parser.new(remove_from_entities: @remove_from_entities)
         if @schema_input_file
-          STDERR.print "Parsing: #{@schema_input_file} ... "
-          parser = Restikle::Parser.new(remove_from_entities: @remove_from_entities)
-          result = parser.parse(@schema_input_file)
-          if result
+          STDERR.print "   Parsing: #{@schema_input_file} ... "
+          if (result = parser.parse(@schema_input_file))
             STDERR.puts "Done."
-            write_output parser.output
+            write_output parser.output, @schema_output_file
           else
             STDERR.puts "Error: problem parsing '#{schema_file}'"
           end
+        end
+        if result && @models_output_file
+          STDERR.print "Generating: #{@models_output_file} ... "
+          out = parser.entities_as_model_classes
+          STDERR.puts "Done."
+          write_output out, @models_output_file
         end
         unless result
           puts opts
@@ -106,9 +119,9 @@ Options:
       end
     end
 
-    def write_output(output)
-      if @schema_output_file
-        File.open(@schema_output_file, 'w+') do |file|
+    def write_output(output, dest)
+      if dest
+        File.open(dest, 'w+') do |file|
           file << output
         end
       else

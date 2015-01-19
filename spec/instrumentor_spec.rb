@@ -67,12 +67,23 @@ describe Restikle::Instrumentor do
     end
   end
 
-  it 'should provide a RestKit mappings for an entity' do
-    instr = Restikle::Instrumentor.new
-    instr.load_schema(file: 'schema_rails.rb',                  remove_from_entities: 'spree_')
-    instr.load_routes(file: 'tillless-commerce-api-routes.txt', remove_from_paths:    '/api/')
-    instr.entities.each do |entity|
-      mappings = instr.restkit_mappings_for(entity.entity_name)
+  it 'should work with the ResourceManager' do
+    @instr = Restikle::Instrumentor.new
+    @instr.load_schema(file: 'schema_rails.rb',                  remove_from_entities: 'spree_')
+    @instr.load_routes(file: 'tillless-commerce-api-routes.txt', remove_from_paths:    '/api/')
+    @instr.should != nil
+
+    @rsmgr = Restikle::ResourceManager.setup(@instr)
+    @rsmgr.should != nil
+    Restikle::ResourceManager.instrumentor.should == @instr
+  end
+
+  it 'should provide RestKit mappings for an entity' do
+    @instr.should != nil
+    @rsmgr.should != nil
+
+    @instr.entities.each do |entity|
+      mappings = @instr.restkit_mappings_for(entity.entity_name)
       mappings.should != nil
       mappings.each do |mapping|
         mapping[:route].should != nil
@@ -80,13 +91,13 @@ describe Restikle::Instrumentor do
         mapping[:request_descriptor][:request_mapping].class.should == RKObjectMapping
         mapping[:request_descriptor][:object_class].should          == entity.entity_name
         mapping[:request_descriptor][:root_key_path].should         == mapping[:route].path
-        mapping[:request_descriptor][:method].should                == instr.rk_request_method_for(mapping[:route].verb)
+        mapping[:request_descriptor][:method].should                == @instr.rk_request_method_for(mapping[:route].verb)
         mapping[:response_descriptor].should != nil
-        mapping[:response_descriptor][:response_mapping].should      != nil
-        mapping[:response_descriptor][:path_pattern].should          == mapping[:route].path
-        mapping[:response_descriptor][:key_path].should              == nil
-        mapping[:response_descriptor][:method].should                == instr.rk_request_method_for(mapping[:route].verb)
-        mapping[:response_descriptor][:status_codes].should          == RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)
+        mapping[:response_descriptor][:response_mapping].should     != nil
+        mapping[:response_descriptor][:path_pattern].should         == mapping[:route].path
+        mapping[:response_descriptor][:key_path].should             == nil
+        mapping[:response_descriptor][:method].should               == @instr.rk_request_method_for(mapping[:route].verb)
+        mapping[:response_descriptor][:status_codes].should         == RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)
       end
     end
   end

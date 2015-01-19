@@ -27,6 +27,7 @@ module Restikle
     end
 
     def setup
+      @entities = []
       @indent   = 0
       @setup    = true
       @output   = <<EOF
@@ -65,8 +66,9 @@ EOF
       entity = matcher.match(line)[1]
       entity.gsub!(@remove_from_entities, '') if @remove_from_entities
       entity = entity.singularize.camelize
-      @output << "  entity \"#{entity}\" do\n"
-      @indent += 1
+      @output   << "  entity \"#{entity}\" do\n"
+      @indent   += 1
+      @entities << entity
     end
 
     def handle_define_field(field, line, matcher)
@@ -87,7 +89,7 @@ EOF
     def handle_define_boolean(line, matcher)   handle_define_field(map_type(:boolean), line, matcher)  end
 
     def handle_end(line, matcher)
-      @indent -= 1
+      @indent -= 1 unless @indent == 0
       @output << "#{indent}end\n"
     end
 
@@ -102,6 +104,14 @@ EOF
       else
         false
       end
+    end
+
+    def entities_as_model_classes
+      str = ''
+      @entities.each do |entity|
+        str << "class #{entity} < CDQManagedObject\nend\n\n"
+      end
+      str
     end
   end
 end
