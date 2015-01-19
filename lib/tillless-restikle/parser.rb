@@ -59,7 +59,7 @@ EOF
       field_name  = field_name.empty? ? :unknown : field_name.underscore.to_sym
       field_parms = matcher.match(line)[2]
       field_parms = field_parms.empty? ? nil : field_parms.strip.squeeze(' ')
-      @output << "#{indent}t.#{field.ljust(10)} :#{field_name}#{field_parms ? ', ' : ''}#{field_parms}\n"
+      @output << "#{indent}#{field.ljust(10)} :#{field_name}#{field_parms ? ', ' : ''}#{field_parms}\n"
     end
 
     def handle_define_string(line, matcher)    handle_define_field('string',   line, matcher)  end
