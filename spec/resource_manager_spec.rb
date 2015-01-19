@@ -21,12 +21,6 @@ describe Restikle::ResourceManager do
     @rsmgr = Restikle::ResourceManager.setup(@instr)
     @rsmgr.should != nil
     Restikle::ResourceManager.instrumentor.should == @instr
-
-    all_entities = CDQ.cdq.models.current.entities
-    # puts ' '
-    all_entities.each do |entity|
-      # puts entity.name
-    end
   end
 
   it 'should find all entities that exist in both CDQ model and Restikle::Instrumentor' do
