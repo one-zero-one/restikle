@@ -40,6 +40,21 @@ module Restikle
       ! (@name.nil? || @verb.nil? || @path.nil? || @ctrl.nil?)
     end
 
+    # True if the route is for the Rails /edit resource
+    def edit_route?
+      @path.match /\/edit$/
+    end
+
+    # True if the route is for the Rails /new resource
+    def new_route?
+      @path.match /\/new$/
+    end
+
+    # True if the route is for one of hte special Rails routes (/new or /edit)
+    def special_route?
+      @path.match /\/(edit|new)$/
+    end
+
     # Human readable output
     def to_s
       "#{@name}, #{@verb}, #{@path}, #{@ctrl}"

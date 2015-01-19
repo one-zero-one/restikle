@@ -37,9 +37,12 @@ module Restikle
         data.split(/\n/).each do |line|
           args[:string] = line
           route = Restikle::Route.new(args)
-          route.name = @last_name if route.name.empty?
-          @routes << route
-          @last_name = route.name
+          # Ignore Rails /edit and /new routes
+          unless route.special_route?
+            route.name = @last_name if route.name.empty?
+            @routes << route
+            @last_name = route.name
+          end
         end
         true
       else
@@ -112,7 +115,7 @@ module Restikle
                 method:           rk_request_method_for(route.verb)
               },
               response_descriptor: {
-                response_mapping: mapping_for_entity_for_name(entity.entity_name),
+                response_mapping: rk_mapping_for_entity_for_name(entity.entity_name),
                 path_pattern:     route.path,
                 key_path:         nil,
                 method:           rk_request_method_for(route.verb),
@@ -125,7 +128,7 @@ module Restikle
       mappings
     end
 
-    def mapping_for_entity_for_name(entity_name)
+    def rk_mapping_for_entity_for_name(entity_name)
       RKEntityMapping.mappingForEntityForName(entity_name, inManagedObjectStore: store).tap do |m|
         m.addAttributeMappingsFromArray(attributes_for_entity(entity_name))
       end
@@ -145,7 +148,6 @@ module Restikle
       Restikle::ResourceManager.store
     end
 
-
     # Dump out the paths registred in @routes for each of the @entities
     def log_paths_for_entities
       @entities.each do |entity|
@@ -160,15 +162,33 @@ module Restikle
     end
 
     RK_REQUEST_METHODS = {
-      get:     RKRequestMethodGET,
-      post:    RKRequestMethodPOST,
-      put:     RKRequestMethodPUT,
-      deleete: RKRequestMethodDELETE,
-      patch:   RKRequestMethodPATCH
+      get:      RKRequestMethodGET,
+      post:     RKRequestMethodPOST,
+      put:      RKRequestMethodPUT,
+      delete:   RKRequestMethodDELETE,
+      head:     RKRequestMethodHEAD,
+      patch:    RKRequestMethodPATCH,
+      options:  RKRequestMethodOPTIONS,
+      any:      RKRequestMethodAny
     }
     # Return a RestKit constant for a HTTP verb string (or symbol)
     def rk_request_method_for(method)
       RK_REQUEST_METHODS[method.to_s.strip.downcase.to_sym]
+    end
+
+    RK_REQUEST_METHOD_STRINGS = {
+      RKRequestMethodGET     => 'get',
+      RKRequestMethodPOST    => 'post',
+      RKRequestMethodPUT     => 'put',
+      RKRequestMethodDELETE  => 'delete',
+      RKRequestMethodHEAD    => 'head',
+      RKRequestMethodPATCH   => 'patch',
+      RKRequestMethodOPTIONS => 'options',
+      RKRequestMethodAny     => 'any'
+    }
+    # Return a string versiuon of a RestKit constant for a HTTP verbs
+    def rk_request_method_string_for(method)
+      RK_REQUEST_METHOD_STRINGS[method]
     end
   end
 end

@@ -13,17 +13,44 @@ module Restikle
         @instrumentor ||= Restikle::Instrumentor.new
       end
 
-      def setup(instrumentor)
+      def setup(instrumentor=nil)
         # NSLog "Restikle::ResourceManager.setup: #{api_url}"
         RKObjectManager.sharedManager = _manager
         @instrumentor = instrumentor
 
-        # TODO: Build mappers from @instrumentor.routes and @instrumentor.entities
-        # @mappers.each do |mapper|
-        #   _manager.addRequestDescriptor(mapper.request_descriptor)
-        #   _manager.addResponseDescriptor(mapper.response_descriptor)
-        # end
+        # Build mappers from @instrumentor.routes and @instrumentor.entities
+        if @instrumentor
+          @instrumentor.entities.each do |entity|
+            mappings = @instrumentor.restkit_mappings_for(entity.entity_name)
+            mappings.each do |mapping|
+              # NSLog "Restikle::ResourceManager.setup: #{mapping[:route].verb}:#{mapping[:route].path}"
+              _manager.addRequestDescriptor(
+                RKRequestDescriptor.requestDescriptorWithMapping(
+                  mapping[:request_descriptor][:request_mapping],
+                  objectClass: mapping[:request_descriptor][:object_class],
+                  rootKeyPath: mapping[:request_descriptor][:root_key_path],
+                  method: mapping[:request_descriptor][:method]
+                )
+              )
+              _manager.addResponseDescriptor(
+                RKResponseDescriptor.responseDescriptorWithMapping(
+                  mapping[:response_descriptor][:response_mapping],
+                  method: mapping[:response_descriptor][:method],
+                  pathPattern: mapping[:response_descriptor][:path_pattern],
+                  keyPath: mapping[:response_descriptor][:key_path],
+                  statusCodes: mapping[:response_descriptor][:status_codes]
+                )
+              )
+            end
+          end
+        else
+          NSLog 'Restikle::ResourceManager.setup: no instrumentor is configured, so no RestKit mappings loaded'
+        end
+
+        # Configure pagination settings
         _manager.setPaginationMapping(default_pagination_mapping)
+
+        self
       end
 
       def default_pagination_mapping
@@ -42,28 +69,20 @@ module Restikle
           'page=:currentPage&per_page=:perPage'
         end
         def pagination_request_string_for_entity(entity)
-          "#{api_ver}/#{entity}?#{default_pagination_request_string}"
+          "#{entity}?#{default_pagination_request_string}"
         end
         def pagination_request_string_for_entity(entity, with_params: params)
-          prstr =  "#{api_ver}/#{entity}?"
+          prstr =  "#{entity}?"
           params.each {|k,v| prstr << "#{k}=#{v}&"}
           prstr << "#{default_pagination_request_string}"
         end
 
         def api_url
-          @api_url ||= "http://api.tillless.com#{api_ver}"
+          @api_url ||= "http://api.tillless.com/api"
         end
         def set_api_url(au)
-          au = "#{au}/" if au[-1] != '/'                      # add trailing / if it's not there
-          ve = api_ver[0] == '/' ? api_ver[1..-1] : api_ver   # remove leading / if it is there
-          @api_url = "#{au}#{ve}"
-        end
-        def api_ver
-          @api_ver ||= '/api'
-        end
-        def set_api_ver(av)
-          @api_url = nil
-          @api_ver = av
+          @api_url = "#{au}#{au[-1] == '/' ? '' : '/'}"   # add trailing / if it's not there
+          reset!
         end
 
         def manager
@@ -86,6 +105,12 @@ module Restikle
 
 
         private
+
+        def reset!
+          @manager = nil
+          @store = nil
+          setup @instrumentor
+        end
 
         def _manager
           @manager ||= RKObjectManager.managerWithBaseURL(NSURL.URLWithString(api_url)).tap do |m|

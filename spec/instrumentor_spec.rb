@@ -47,8 +47,11 @@ describe Restikle::Instrumentor do
       'get'     => RKRequestMethodGET,
       'post'    => RKRequestMethodPOST,
       'put'     => RKRequestMethodPUT,
-      'deleete' => RKRequestMethodDELETE,
-      'patch'   => RKRequestMethodPATCH
+      'delete'  => RKRequestMethodDELETE,
+      'head'    => RKRequestMethodHEAD,
+      'patch'   => RKRequestMethodPATCH,
+      'options' => RKRequestMethodOPTIONS,
+      'any'     => RKRequestMethodAny
     }
     verbs.keys.each do |verb|
       rkrm = instr.rk_request_method_for(verb.upcase)
@@ -65,6 +68,11 @@ describe Restikle::Instrumentor do
       rkrm.should != nil
       rkrm.should == verbs[verb]
     end
+    verbs.each do |verb, verb_constant|
+      rkrmstr = instr.rk_request_method_string_for(verb_constant)
+      rkrmstr.should != nil
+      rkrmstr.should == verb
+    end
   end
 
   it 'should work with the ResourceManager' do
@@ -76,6 +84,21 @@ describe Restikle::Instrumentor do
     @rsmgr = Restikle::ResourceManager.setup(@instr)
     @rsmgr.should != nil
     Restikle::ResourceManager.instrumentor.should == @instr
+  end
+
+  it 'should allow for configuration of API keys' do
+    @rsmgr.should != nil
+    @rsmgr.add_headers('X-Spree-Token' => '5b7ee7b72bb606a354b9c5dc2dfc01ee510ed7c272502050')
+    @rsmgr.headers['X-Spree-Token'].should != nil
+  end
+
+  it 'should allow for the API url to be set' do
+    api_url = 'http://localhost:3200/api/'
+
+    @rsmgr.should != nil
+    @rsmgr.api_url.should != nil
+    @rsmgr.set_api_url api_url
+    @rsmgr.api_url.should == api_url
   end
 
   it 'should provide RestKit mappings for an entity' do
@@ -98,7 +121,86 @@ describe Restikle::Instrumentor do
         mapping[:response_descriptor][:key_path].should             == nil
         mapping[:response_descriptor][:method].should               == @instr.rk_request_method_for(mapping[:route].verb)
         mapping[:response_descriptor][:status_codes].should         == RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)
+        # puts  " "
+        # puts  "    entity: #{entity}"
+        # puts  "   request: #{mapping[:route].verb} #{mapping[:request_descriptor][:root_key_path]}"
+        # id_attrs = []
+        # mapping[:response_descriptor][:response_mapping].identificationAttributes.each do |attr|
+        #   id_attrs << "#{attr.attributeValueClassName}:#{attr.attributeType}"
+        # end
+        # puts "  id attrs: #{id_attrs}"
+        # puts "resp attrs: #{mapping[:response_descriptor][:response_mapping].entity.attributesByName.keys}"
+        # puts "  "
       end
+    end
+  end
+
+  it 'should allow a simple (non-nested) get call to the back-end (states/1)' do
+    @instr.should != nil
+    @rsmgr.should != nil
+
+    @status = :unknown
+
+    @state = State.where(:id).eq(1).first
+    Dispatch::Queue.concurrent(:default).async do
+      @rsmgr.manager.getObject(
+        @state,
+        path: 'states/1',
+        parameters: nil,
+        success: ->(op,res) {
+          puts "\n op: #{op}"
+          puts   "res: #{res}"
+          cdq.save
+          @status = :success
+          resume
+        },
+        failure: ->(op,err) {
+          puts "\n op: #{op}"
+          puts   "err: #{err}"
+          @status = :failed
+          resume
+        }
+      )
+    end
+    wait_max 20.0 do
+      @status.should != :failed
+      @status.should != :unknown
+      @status.should == :success
+    end
+  end
+
+  it 'should allow a not-so-simple (nested) get call to the back-end (countries/1)' do
+    @instr.should != nil
+    @rsmgr.should != nil
+
+    @status = :unknown
+
+    @country = Country.where(:id).eq(1).first
+    Dispatch::Queue.concurrent(:default).async do
+      @rsmgr.manager.getObject(
+      @country,
+      path: 'countries/1',
+      parameters: nil,
+      success: ->(op,res) {
+        puts "\n op: #{op}"
+        puts   "res: #{res}"
+        cdq.save
+        @status = :success
+        resume
+      },
+      failure: ->(op,err) {
+        puts "\n op: #{op}"
+        puts   "err: #{err}"
+        @status = :failed
+        resume
+      }
+      )
+    end
+
+    wait_max 20.0 do
+      @status.should != :failed
+      @status.should != :unknown
+      @status.should == :success
     end
   end
 end

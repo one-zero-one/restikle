@@ -67,6 +67,8 @@ EOF
       entity.gsub!(@remove_from_entities, '') if @remove_from_entities
       entity = entity.singularize.camelize
       @output   << "  entity \"#{entity}\" do\n"
+      @output   << "    integer64  :id, default: -1\n"
+      # @output   << "    integer64  :#{entity.underscore}_id, default: -1\n"
       @indent   += 1
       @entities << entity
     end
