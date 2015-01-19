@@ -33,7 +33,8 @@ describe Restikle::ResourceManager do
       @instr.entities.each do |inst_entity|
         matched = true if cdq_entity.name == inst_entity.entity_name
       end
-      puts "Looked for: #{cdq_entity.name} ... Not Found!" unless matched
+      puts "Looked for: #{cdq_entity.name} ... was not found!" unless matched
+      matched.should == true
     end
   end
 
