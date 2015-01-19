@@ -112,7 +112,7 @@ Options:
           file << output
         end
       else
-        STDERR.print "\n"
+        # STDERR.print "\n"
         puts output
       end
     end
