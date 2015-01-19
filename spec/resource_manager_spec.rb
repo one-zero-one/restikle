@@ -23,9 +23,9 @@ describe Restikle::ResourceManager do
     Restikle::ResourceManager.instrumentor.should == @instr
 
     all_entities = CDQ.cdq.models.current.entities
-    puts ' '
+    # puts ' '
     all_entities.each do |entity|
-      puts entity.name
+      # puts entity.name
     end
   end
 
@@ -34,17 +34,15 @@ describe Restikle::ResourceManager do
     @rsmgr.should != nil
 
     all_entities = CDQ.cdq.models.current.entities
-    puts ' '
     all_entities.each do |cdq_entity|
-      print "Looking for: #{cdq_entity.name} ... "
       matched = false
       @instr.entities.each do |inst_entity|
         if cdq_entity.name == inst_entity.entity_name
-          puts ' Found!'
+          # puts ' Found!'
           matched = true
         end
       end
-      puts ' Not Found!' unless matched
+      puts "Looking for: #{cdq_entity.name} ... Not Found!" unless matched
     end
   end
 

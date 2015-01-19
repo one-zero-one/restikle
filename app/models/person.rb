@@ -1,2 +1,0 @@
-class Person < CDQManagedObject
-end 

@@ -4,11 +4,26 @@ require 'active_support/inflector'
 
 module Restikle
   class Parser
-    attr_accessor :output, :setup, :remove_from_entities
+    attr_accessor :output, :setup, :remove_from_entities, :type_map
+
+    DEFAULT_TYPE_MAP = {
+      string:   'string',
+      text:     'string',
+      integer:  'integer32',
+      datetime: 'datetime',
+      decimal:  'decimal',
+      float:    'float',
+      boolean:  'boolean'
+    }
 
     def initialize(args={})
+      @type_map = DEFAULT_TYPE_MAP.clone
       @remove_from_entities = args[:remove_from_entities]
       setup
+    end
+
+    def map_type(typ)
+      @type_map[typ]
     end
 
     def setup
@@ -56,19 +71,20 @@ EOF
 
     def handle_define_field(field, line, matcher)
       field_name  = matcher.match(line)[1]
-      field_name  = field_name.empty? ? :unknown : field_name.underscore.to_sym
+      field_name  = field_name.empty? ? :unknown : field_name.underscore
+      field_name.gsub!('description', 'descrip') # NOTE: iOS #description is reserved
       field_parms = matcher.match(line)[2]
       field_parms = field_parms.empty? ? nil : field_parms.strip.squeeze(' ')
       @output << "#{indent}#{field.ljust(10)} :#{field_name}#{field_parms ? ', ' : ''}#{field_parms}\n"
     end
 
-    def handle_define_string(line, matcher)    handle_define_field('string',   line, matcher)  end
-    def handle_define_text(line, matcher)      handle_define_field('text',     line, matcher)  end
-    def handle_define_integer(line, matcher)   handle_define_field('integer',  line, matcher)  end
-    def handle_define_datetime(line, matcher)  handle_define_field('datetime', line, matcher)  end
-    def handle_define_decimal(line, matcher)   handle_define_field('decimal',  line, matcher)  end
-    def handle_define_float(line, matcher)     handle_define_field('float',    line, matcher)  end
-    def handle_define_boolean(line, matcher)   handle_define_field('boolean',  line, matcher)  end
+    def handle_define_string(line, matcher)    handle_define_field(map_type(:string),  line, matcher)  end
+    def handle_define_text(line, matcher)      handle_define_field(map_type(:string),  line, matcher)  end
+    def handle_define_integer(line, matcher)   handle_define_field(map_type(:integer), line, matcher)  end
+    def handle_define_datetime(line, matcher)  handle_define_field(map_type(:datetime),line, matcher)  end
+    def handle_define_decimal(line, matcher)   handle_define_field(map_type(:decimal), line, matcher)  end
+    def handle_define_float(line, matcher)     handle_define_field(map_type(:float),   line, matcher)  end
+    def handle_define_boolean(line, matcher)   handle_define_field(map_type(:boolean), line, matcher)  end
 
     def handle_end(line, matcher)
       @indent -= 1
