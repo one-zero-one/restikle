@@ -4,25 +4,25 @@ module Restikle
       include CDQ
 
       def reset
+        @instrumentor = nil
         @manager = nil
         @store = nil
       end
 
-      def mappers
-        @mappers
+      def instrumentor
+        @instrumentor ||= Restikle::Instrumentor.new
       end
 
-      def setup(routes=[])
-        NSLog "Restikle::ResourceManager.setup: #{api_url}"
+      def setup(instrumentor)
+        # NSLog "Restikle::ResourceManager.setup: #{api_url}"
         RKObjectManager.sharedManager = _manager
+        @instrumentor = instrumentor
 
-        # Add a request and response descriptor for each core data mapper
-        @mappers = []
-
-        @mappers.each do |mapper|
-          _manager.addRequestDescriptor(mapper.request_descriptor)
-          _manager.addResponseDescriptor(mapper.response_descriptor)
-        end
+        # TODO: Build mappers from @instrumentor.routes and @instrumentor.entities
+        # @mappers.each do |mapper|
+        #   _manager.addRequestDescriptor(mapper.request_descriptor)
+        #   _manager.addResponseDescriptor(mapper.response_descriptor)
+        # end
         _manager.setPaginationMapping(default_pagination_mapping)
       end
 

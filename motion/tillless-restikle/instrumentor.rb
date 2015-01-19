@@ -1,5 +1,6 @@
 module Restikle
   class Instrumentor
+    include CDQ
     attr_accessor :routes, :remove_from_paths, :entities, :remove_from_entities
 
     # Create a new instrumentor
@@ -78,6 +79,19 @@ module Restikle
       else
         false
       end
+    end
+
+    def cdq_attributes_for_entity(entity_name)
+      out = ""
+      attrs = {}
+      entity = @entities.find {|e| e.entity_name == entity_name}
+      if entity
+        cdq_entities = CDQ.cdq.models.current.entities
+        cdq_entities.each do |ent|
+          out << "\n #{ent.name}"
+        end
+      end
+      NSLog out
     end
 
     # Build a RestKit request and response mapping for each path for entity, where entity_name
