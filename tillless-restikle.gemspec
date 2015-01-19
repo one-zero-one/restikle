@@ -6,8 +6,8 @@ Gem::Specification.new do |spec|
   spec.version       = Restikle::VERSION
   spec.authors       = ["tillless", "matthewsinclair"]
   spec.email         = ["matthew.sinclair@tillless.com"]
-  spec.description   = %q{Easily work with Rails routes and schema in an iOS RestKit+CDQ project.}
-  spec.summary       = %q{Easily work with Rails routes and schema in an iOS RestKit+CDQ project.}
+  spec.description   = %q{Easily work with Rails routes and schemas in an iOS RestKit+CDQ project.}
+  spec.summary       = %q{Easily work with Rails routes and schemas in an iOS RestKit+CDQ project.}
   spec.homepage      = "http://www.tillless.com"
   spec.license       = "MIT"
 
