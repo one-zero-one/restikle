@@ -9,7 +9,7 @@ module Restikle
     DEFAULT_TYPE_MAP = {
       string:   'string',
       text:     'string',
-      integer:  'integer32',
+      integer:  'integer64',
       datetime: 'datetime',
       decimal:  'decimal',
       float:    'float',
@@ -62,13 +62,13 @@ EOF
       @output << "schema \"#{version}\" do\n"
       @indent += 1
     end
+
     def handle_create_table(line, matcher)
       entity = matcher.match(line)[1]
       entity.gsub!(@remove_from_entities, '') if @remove_from_entities
       entity = entity.singularize.camelize
       @output   << "  entity \"#{entity}\" do\n"
       @output   << "    integer64  :id, default: -1\n"
-      # @output   << "    integer64  :#{entity.underscore}_id, default: -1\n"
       @indent   += 1
       @entities << entity
     end

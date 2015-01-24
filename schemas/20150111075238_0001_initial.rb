@@ -3,7 +3,7 @@ schema "20150111075238" do
   entity "FriendlyIdSlug" do
     integer64  :id, default: -1
     string     :slug, null: false
-    integer32  :sluggable_id, null: false
+    integer64  :sluggable_id, null: false
     string     :sluggable_type, limit: 50
     string     :scope
     datetime   :created_at
@@ -20,16 +20,16 @@ schema "20150111075238" do
     string     :state_name
     string     :alternative_phone
     string     :company
-    integer32  :state_id
-    integer32  :country_id
+    integer64  :state_id
+    integer64  :country_id
     datetime   :created_at
     datetime   :updated_at
   end
   entity "Adjustment" do
     integer64  :id, default: -1
-    integer32  :source_id
+    integer64  :source_id
     string     :source_type
-    integer32  :adjustable_id
+    integer64  :adjustable_id
     string     :adjustable_type
     decimal    :amount, precision: 10, scale: 2
     string     :label
@@ -38,17 +38,17 @@ schema "20150111075238" do
     datetime   :created_at
     datetime   :updated_at
     string     :state
-    integer32  :order_id
+    integer64  :order_id
     boolean    :included, default: false
   end
   entity "Asset" do
     integer64  :id, default: -1
-    integer32  :viewable_id
+    integer64  :viewable_id
     string     :viewable_type
-    integer32  :attachment_width
-    integer32  :attachment_height
-    integer32  :attachment_file_size
-    integer32  :position
+    integer64  :attachment_width
+    integer64  :attachment_height
+    integer64  :attachment_file_size
+    integer64  :position
     string     :attachment_content_type
     string     :attachment_file_name
     string     :type, limit: 75
@@ -60,7 +60,7 @@ schema "20150111075238" do
   entity "Calculator" do
     integer64  :id, default: -1
     string     :type
-    integer32  :calculable_id
+    integer64  :calculable_id
     string     :calculable_type
     datetime   :created_at
     datetime   :updated_at
@@ -79,7 +79,7 @@ schema "20150111075238" do
     string     :iso
     string     :iso3
     string     :name
-    integer32  :numcode
+    integer64  :numcode
     boolean    :states_required, default: false
     datetime   :updated_at
   end
@@ -89,20 +89,20 @@ schema "20150111075238" do
     string     :year
     string     :cc_type
     string     :last_digits
-    integer32  :address_id
+    integer64  :address_id
     string     :gateway_customer_profile_id
     string     :gateway_payment_profile_id
     datetime   :created_at
     datetime   :updated_at
     string     :name
-    integer32  :user_id
-    integer32  :payment_method_id
+    integer64  :user_id
+    integer64  :payment_method_id
     boolean    :default, default: false, null: false
   end
   entity "CustomerReturn" do
     integer64  :id, default: -1
     string     :number
-    integer32  :stock_location_id
+    integer64  :stock_location_id
     datetime   :created_at
     datetime   :updated_at
   end
@@ -122,25 +122,25 @@ schema "20150111075238" do
   entity "InventoryUnit" do
     integer64  :id, default: -1
     string     :state
-    integer32  :variant_id
-    integer32  :order_id
-    integer32  :shipment_id
+    integer64  :variant_id
+    integer64  :order_id
+    integer64  :shipment_id
     datetime   :created_at
     datetime   :updated_at
     boolean    :pending, default: true
-    integer32  :line_item_id
+    integer64  :line_item_id
   end
   entity "LineItem" do
     integer64  :id, default: -1
-    integer32  :variant_id
-    integer32  :order_id
-    integer32  :quantity, null: false
+    integer64  :variant_id
+    integer64  :order_id
+    integer64  :quantity, null: false
     decimal    :price, precision: 10, scale: 2, null: false
     datetime   :created_at
     datetime   :updated_at
     string     :currency
     decimal    :cost_price, precision: 10, scale: 2
-    integer32  :tax_category_id
+    integer64  :tax_category_id
     decimal    :adjustment_total, precision: 10, scale: 2, default: 0.0
     decimal    :additional_tax_total, precision: 10, scale: 2, default: 0.0
     decimal    :promo_total, precision: 10, scale: 2, default: 0.0
@@ -149,7 +149,7 @@ schema "20150111075238" do
   end
   entity "LogEntry" do
     integer64  :id, default: -1
-    integer32  :source_id
+    integer64  :source_id
     string     :source_type
     string     :details
     datetime   :created_at
@@ -159,28 +159,28 @@ schema "20150111075238" do
     integer64  :id, default: -1
     string     :name, limit: 100
     string     :presentation, limit: 100
-    integer32  :position, default: 0, null: false
+    integer64  :position, default: 0, null: false
     datetime   :created_at
     datetime   :updated_at
   end
   entity "OptionTypesPrototype" do
     integer64  :id, default: -1
-    integer32  :prototype_id
-    integer32  :option_type_id
+    integer64  :prototype_id
+    integer64  :option_type_id
   end
   entity "OptionValue" do
     integer64  :id, default: -1
-    integer32  :position
+    integer64  :position
     string     :name
     string     :presentation
-    integer32  :option_type_id
+    integer64  :option_type_id
     datetime   :created_at
     datetime   :updated_at
   end
   entity "OptionValuesVariant" do
     integer64  :id, default: -1
-    integer32  :variant_id
-    integer32  :option_value_id
+    integer64  :variant_id
+    integer64  :option_value_id
   end
   entity "Order" do
     integer64  :id, default: -1
@@ -189,12 +189,12 @@ schema "20150111075238" do
     decimal    :total, precision: 10, scale: 2, default: 0.0, null: false
     string     :state
     decimal    :adjustment_total, precision: 10, scale: 2, default: 0.0, null: false
-    integer32  :user_id
+    integer64  :user_id
     datetime   :completed_at
-    integer32  :bill_address_id
-    integer32  :ship_address_id
+    integer64  :bill_address_id
+    integer64  :ship_address_id
     decimal    :payment_total, precision: 10, scale: 2, default: 0.0
-    integer32  :shipping_method_id
+    integer64  :shipping_method_id
     string     :shipment_state
     string     :payment_state
     string     :email
@@ -203,32 +203,32 @@ schema "20150111075238" do
     datetime   :updated_at
     string     :currency
     string     :last_ip_address
-    integer32  :created_by_id
+    integer64  :created_by_id
     decimal    :shipment_total, precision: 10, scale: 2, default: 0.0, null: false
     decimal    :additional_tax_total, precision: 10, scale: 2, default: 0.0
     decimal    :promo_total, precision: 10, scale: 2, default: 0.0
     string     :channel, default: "spree"
     decimal    :included_tax_total, precision: 10, scale: 2, default: 0.0, null: false
-    integer32  :item_count, default: 0
-    integer32  :approver_id
+    integer64  :item_count, default: 0
+    integer64  :approver_id
     datetime   :approved_at
     boolean    :confirmation_delivered, default: false
     boolean    :considered_risky, default: false
     string     :guest_token
     datetime   :canceled_at
-    integer32  :canceler_id
-    integer32  :store_id
-    integer32  :state_lock_version, default: 0, null: false
+    integer64  :canceler_id
+    integer64  :store_id
+    integer64  :state_lock_version, default: 0, null: false
   end
   entity "OrdersPromotion" do
     integer64  :id, default: -1
-    integer32  :order_id
-    integer32  :promotion_id
+    integer64  :order_id
+    integer64  :promotion_id
   end
   entity "PaymentCaptureEvent" do
     integer64  :id, default: -1
     decimal    :amount, precision: 10, scale: 2, default: 0.0
-    integer32  :payment_id
+    integer64  :payment_id
     datetime   :created_at
     datetime   :updated_at
   end
@@ -249,10 +249,10 @@ schema "20150111075238" do
   entity "Payment" do
     integer64  :id, default: -1
     decimal    :amount, precision: 10, scale: 2, default: 0.0, null: false
-    integer32  :order_id
-    integer32  :source_id
+    integer64  :order_id
+    integer64  :source_id
     string     :source_type
-    integer32  :payment_method_id
+    integer64  :payment_method_id
     string     :state
     string     :response_code
     string     :avs_response
@@ -271,27 +271,27 @@ schema "20150111075238" do
   end
   entity "Price" do
     integer64  :id, default: -1
-    integer32  :variant_id, null: false
+    integer64  :variant_id, null: false
     decimal    :amount, precision: 10, scale: 2
     string     :currency
     datetime   :deleted_at
   end
   entity "ProductOptionType" do
     integer64  :id, default: -1
-    integer32  :position
-    integer32  :product_id
-    integer32  :option_type_id
+    integer64  :position
+    integer64  :product_id
+    integer64  :option_type_id
     datetime   :created_at
     datetime   :updated_at
   end
   entity "ProductProperty" do
     integer64  :id, default: -1
     string     :value
-    integer32  :product_id
-    integer32  :property_id
+    integer64  :product_id
+    integer64  :property_id
     datetime   :created_at
     datetime   :updated_at
-    integer32  :position, default: 0
+    integer64  :position, default: 0
   end
   entity "Product" do
     integer64  :id, default: -1
@@ -302,8 +302,8 @@ schema "20150111075238" do
     string     :slug
     string     :meta_descrip
     string     :meta_keywords
-    integer32  :tax_category_id
-    integer32  :shipping_category_id
+    integer64  :tax_category_id
+    integer64  :shipping_category_id
     datetime   :created_at
     datetime   :updated_at
     boolean    :promotionable, default: true
@@ -311,25 +311,25 @@ schema "20150111075238" do
   end
   entity "ProductsPromotionRule" do
     integer64  :id, default: -1
-    integer32  :product_id
-    integer32  :promotion_rule_id
+    integer64  :product_id
+    integer64  :promotion_rule_id
   end
   entity "ProductsTaxon" do
     integer64  :id, default: -1
-    integer32  :product_id
-    integer32  :taxon_id
-    integer32  :position
+    integer64  :product_id
+    integer64  :taxon_id
+    integer64  :position
   end
   entity "PromotionActionLineItem" do
     integer64  :id, default: -1
-    integer32  :promotion_action_id
-    integer32  :variant_id
-    integer32  :quantity, default: 1
+    integer64  :promotion_action_id
+    integer64  :variant_id
+    integer64  :quantity, default: 1
   end
   entity "PromotionAction" do
     integer64  :id, default: -1
-    integer32  :promotion_id
-    integer32  :position
+    integer64  :promotion_id
+    integer64  :position
     string     :type
     datetime   :deleted_at
   end
@@ -341,9 +341,9 @@ schema "20150111075238" do
   end
   entity "PromotionRule" do
     integer64  :id, default: -1
-    integer32  :promotion_id
-    integer32  :user_id
-    integer32  :product_group_id
+    integer64  :promotion_id
+    integer64  :user_id
+    integer64  :product_group_id
     string     :type
     datetime   :created_at
     datetime   :updated_at
@@ -352,8 +352,8 @@ schema "20150111075238" do
   end
   entity "PromotionRulesUser" do
     integer64  :id, default: -1
-    integer32  :user_id
-    integer32  :promotion_rule_id
+    integer64  :user_id
+    integer64  :promotion_rule_id
   end
   entity "Promotion" do
     integer64  :id, default: -1
@@ -362,14 +362,14 @@ schema "20150111075238" do
     datetime   :starts_at
     string     :name
     string     :type
-    integer32  :usage_limit
+    integer64  :usage_limit
     string     :match_policy, default: "all"
     string     :code
     boolean    :advertise, default: false
     string     :path
     datetime   :created_at
     datetime   :updated_at
-    integer32  :promotion_category_id
+    integer64  :promotion_category_id
   end
   entity "Property" do
     integer64  :id, default: -1
@@ -380,8 +380,8 @@ schema "20150111075238" do
   end
   entity "PropertiesPrototype" do
     integer64  :id, default: -1
-    integer32  :prototype_id
-    integer32  :property_id
+    integer64  :prototype_id
+    integer64  :property_id
   end
   entity "Prototype" do
     integer64  :id, default: -1
@@ -399,19 +399,19 @@ schema "20150111075238" do
   end
   entity "Refund" do
     integer64  :id, default: -1
-    integer32  :payment_id
+    integer64  :payment_id
     decimal    :amount, precision: 10, scale: 2, default: 0.0, null: false
     string     :transaction_id
     datetime   :created_at
     datetime   :updated_at
-    integer32  :refund_reason_id
-    integer32  :reimbursement_id
+    integer64  :refund_reason_id
+    integer64  :reimbursement_id
   end
   entity "ReimbursementCredit" do
     integer64  :id, default: -1
     decimal    :amount, precision: 10, scale: 2, default: 0.0, null: false
-    integer32  :reimbursement_id
-    integer32  :creditable_id
+    integer64  :reimbursement_id
+    integer64  :creditable_id
     string     :creditable_type
   end
   entity "ReimbursementType" do
@@ -427,8 +427,8 @@ schema "20150111075238" do
     integer64  :id, default: -1
     string     :number
     string     :reimbursement_status
-    integer32  :customer_return_id
-    integer32  :order_id
+    integer64  :customer_return_id
+    integer64  :order_id
     decimal    :total, precision: 10, scale: 2
     datetime   :created_at
     datetime   :updated_at
@@ -445,18 +445,18 @@ schema "20150111075238" do
     integer64  :id, default: -1
     string     :number
     string     :state
-    integer32  :order_id
+    integer64  :order_id
     string     :memo
     datetime   :created_at
     datetime   :updated_at
-    integer32  :stock_location_id
-    integer32  :return_authorization_reason_id
+    integer64  :stock_location_id
+    integer64  :return_authorization_reason_id
   end
   entity "ReturnItem" do
     integer64  :id, default: -1
-    integer32  :return_authorization_id
-    integer32  :inventory_unit_id
-    integer32  :exchange_variant_id
+    integer64  :return_authorization_id
+    integer64  :inventory_unit_id
+    integer64  :exchange_variant_id
     datetime   :created_at
     datetime   :updated_at
     decimal    :pre_tax_amount, precision: 12, scale: 4, default: 0.0, null: false
@@ -464,12 +464,12 @@ schema "20150111075238" do
     decimal    :additional_tax_total, precision: 12, scale: 4, default: 0.0, null: false
     string     :reception_status
     string     :acceptance_status
-    integer32  :customer_return_id
-    integer32  :reimbursement_id
-    integer32  :exchange_inventory_unit_id
+    integer64  :customer_return_id
+    integer64  :reimbursement_id
+    integer64  :exchange_inventory_unit_id
     string     :acceptance_status_errors
-    integer32  :preferred_reimbursement_type_id
-    integer32  :override_reimbursement_type_id
+    integer64  :preferred_reimbursement_type_id
+    integer64  :override_reimbursement_type_id
   end
   entity "Role" do
     integer64  :id, default: -1
@@ -477,8 +477,8 @@ schema "20150111075238" do
   end
   entity "RolesUser" do
     integer64  :id, default: -1
-    integer32  :role_id
-    integer32  :user_id
+    integer64  :role_id
+    integer64  :user_id
   end
   entity "Shipment" do
     integer64  :id, default: -1
@@ -486,12 +486,12 @@ schema "20150111075238" do
     string     :number
     decimal    :cost, precision: 10, scale: 2, default: 0.0
     datetime   :shipped_at
-    integer32  :order_id
-    integer32  :address_id
+    integer64  :order_id
+    integer64  :address_id
     string     :state
     datetime   :created_at
     datetime   :updated_at
-    integer32  :stock_location_id
+    integer64  :stock_location_id
     decimal    :adjustment_total, precision: 10, scale: 2, default: 0.0
     decimal    :additional_tax_total, precision: 10, scale: 2, default: 0.0
     decimal    :promo_total, precision: 10, scale: 2, default: 0.0
@@ -506,8 +506,8 @@ schema "20150111075238" do
   end
   entity "ShippingMethodCategory" do
     integer64  :id, default: -1
-    integer32  :shipping_method_id, null: false
-    integer32  :shipping_category_id, null: false
+    integer64  :shipping_method_id, null: false
+    integer64  :shipping_category_id, null: false
     datetime   :created_at
     datetime   :updated_at
   end
@@ -520,31 +520,31 @@ schema "20150111075238" do
     datetime   :updated_at
     string     :tracking_url
     string     :admin_name
-    integer32  :tax_category_id
+    integer64  :tax_category_id
     string     :code
   end
   entity "ShippingMethodsZone" do
     integer64  :id, default: -1
-    integer32  :shipping_method_id
-    integer32  :zone_id
+    integer64  :shipping_method_id
+    integer64  :zone_id
   end
   entity "ShippingRate" do
     integer64  :id, default: -1
-    integer32  :shipment_id
-    integer32  :shipping_method_id
+    integer64  :shipment_id
+    integer64  :shipping_method_id
     boolean    :selected, default: false
     decimal    :cost, precision: 8, scale: 2, default: 0.0
     datetime   :created_at
     datetime   :updated_at
-    integer32  :tax_rate_id
+    integer64  :tax_rate_id
   end
   entity "SkrillTransaction" do
     integer64  :id, default: -1
     string     :email
     float      :amount
     string     :currency
-    integer32  :transaction_id
-    integer32  :customer_id
+    integer64  :transaction_id
+    integer64  :customer_id
     string     :payment_type
     datetime   :created_at
     datetime   :updated_at
@@ -553,8 +553,8 @@ schema "20150111075238" do
     integer64  :id, default: -1
     string     :name
     string     :previous_state
-    integer32  :stateful_id
-    integer32  :user_id
+    integer64  :stateful_id
+    integer64  :user_id
     string     :stateful_type
     string     :next_state
     datetime   :created_at
@@ -564,14 +564,14 @@ schema "20150111075238" do
     integer64  :id, default: -1
     string     :name
     string     :abbr
-    integer32  :country_id
+    integer64  :country_id
     datetime   :updated_at
   end
   entity "StockItem" do
     integer64  :id, default: -1
-    integer32  :stock_location_id
-    integer32  :variant_id
-    integer32  :count_on_hand, default: 0, null: false
+    integer64  :stock_location_id
+    integer64  :variant_id
+    integer64  :count_on_hand, default: 0, null: false
     datetime   :created_at
     datetime   :updated_at
     boolean    :backorderable, default: false
@@ -586,9 +586,9 @@ schema "20150111075238" do
     string     :address1
     string     :address2
     string     :city
-    integer32  :state_id
+    integer64  :state_id
     string     :state_name
-    integer32  :country_id
+    integer64  :country_id
     string     :zipcode
     string     :phone
     boolean    :active, default: true
@@ -598,20 +598,20 @@ schema "20150111075238" do
   end
   entity "StockMovement" do
     integer64  :id, default: -1
-    integer32  :stock_item_id
-    integer32  :quantity, default: 0
+    integer64  :stock_item_id
+    integer64  :quantity, default: 0
     string     :action
     datetime   :created_at
     datetime   :updated_at
-    integer32  :originator_id
+    integer64  :originator_id
     string     :originator_type
   end
   entity "StockTransfer" do
     integer64  :id, default: -1
     string     :type
     string     :reference
-    integer32  :source_location_id
-    integer32  :destination_location_id
+    integer64  :source_location_id
+    integer64  :destination_location_id
     datetime   :created_at
     datetime   :updated_at
     string     :number
@@ -643,8 +643,8 @@ schema "20150111075238" do
   entity "TaxRate" do
     integer64  :id, default: -1
     decimal    :amount, precision: 8, scale: 5
-    integer32  :zone_id
-    integer32  :tax_category_id
+    integer64  :zone_id
+    integer64  :tax_category_id
     boolean    :included_in_price, default: false
     datetime   :created_at
     datetime   :updated_at
@@ -657,20 +657,20 @@ schema "20150111075238" do
     string     :name, null: false
     datetime   :created_at
     datetime   :updated_at
-    integer32  :position, default: 0
+    integer64  :position, default: 0
   end
   entity "Taxon" do
     integer64  :id, default: -1
-    integer32  :parent_id
-    integer32  :position, default: 0
+    integer64  :parent_id
+    integer64  :position, default: 0
     string     :name, null: false
     string     :permalink
-    integer32  :taxonomy_id
-    integer32  :lft
-    integer32  :rgt
+    integer64  :taxonomy_id
+    integer64  :lft
+    integer64  :rgt
     string     :icon_file_name
     string     :icon_content_type
-    integer32  :icon_file_size
+    integer64  :icon_file_size
     datetime   :icon_updated_at
     string     :descrip
     datetime   :created_at
@@ -678,21 +678,21 @@ schema "20150111075238" do
     string     :meta_title
     string     :meta_descrip
     string     :meta_keywords
-    integer32  :depth
+    integer64  :depth
   end
   entity "TaxonsPromotionRule" do
     integer64  :id, default: -1
-    integer32  :taxon_id
-    integer32  :promotion_rule_id
+    integer64  :taxon_id
+    integer64  :promotion_rule_id
   end
   entity "TaxonsPrototype" do
     integer64  :id, default: -1
-    integer32  :taxon_id
-    integer32  :prototype_id
+    integer64  :taxon_id
+    integer64  :prototype_id
   end
   entity "TokenizedPermission" do
     integer64  :id, default: -1
-    integer32  :permissable_id
+    integer64  :permissable_id
     string     :permissable_type
     string     :token
     datetime   :created_at
@@ -715,16 +715,16 @@ schema "20150111075238" do
     string     :persistence_token
     string     :reset_password_token
     string     :perishable_token
-    integer32  :sign_in_count, default: 0, null: false
-    integer32  :failed_attempts, default: 0, null: false
+    integer64  :sign_in_count, default: 0, null: false
+    integer64  :failed_attempts, default: 0, null: false
     datetime   :last_request_at
     datetime   :current_sign_in_at
     datetime   :last_sign_in_at
     string     :current_sign_in_ip
     string     :last_sign_in_ip
     string     :login
-    integer32  :ship_address_id
-    integer32  :bill_address_id
+    integer64  :ship_address_id
+    integer64  :bill_address_id
     string     :authentication_token
     string     :unlock_token
     datetime   :locked_at
@@ -747,20 +747,20 @@ schema "20150111075238" do
     decimal    :depth, precision: 8, scale: 2
     datetime   :deleted_at
     boolean    :is_master, default: false
-    integer32  :product_id
+    integer64  :product_id
     decimal    :cost_price, precision: 10, scale: 2
-    integer32  :position
+    integer64  :position
     string     :cost_currency
     boolean    :track_inventory, default: true
-    integer32  :tax_category_id
+    integer64  :tax_category_id
     datetime   :updated_at
-    integer32  :stock_items_count, default: 0, null: false
+    integer64  :stock_items_count, default: 0, null: false
   end
   entity "ZoneMember" do
     integer64  :id, default: -1
-    integer32  :zoneable_id
+    integer64  :zoneable_id
     string     :zoneable_type
-    integer32  :zone_id
+    integer64  :zone_id
     datetime   :created_at
     datetime   :updated_at
   end
@@ -769,7 +769,7 @@ schema "20150111075238" do
     string     :name
     string     :descrip
     boolean    :default_tax, default: false
-    integer32  :zone_members_count, default: 0
+    integer64  :zone_members_count, default: 0
     datetime   :created_at
     datetime   :updated_at
   end

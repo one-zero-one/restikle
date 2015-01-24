@@ -1,6 +1,8 @@
 describe "#{Restikle::ResourceManager} REST" do
   extend WebStub::SpecHelpers
 
+  URL_FOR_SPECS = 'http://api.tillless.com/api/'
+
   URL_FOR_GET_STATES_1  = "#{Restikle::ResourceManager.api_url}/states/1"
   JSON_FOR_GET_STATES_1 = BW::JSON.parse <<EOF
 {
@@ -93,9 +95,9 @@ EOF
   it 'should exist and be setup' do
     @rsmgr = Restikle::ResourceManager.setup
     @rsmgr.should != nil
-    Restikle::ResourceManager.instrumentor.load_schema(file: 'schema_rails.rb',                  remove_from_entities: 'spree_')
-    Restikle::ResourceManager.instrumentor.load_routes(file: 'tillless-commerce-api-routes.txt', remove_from_paths:    '/api/')
     Restikle::ResourceManager.instrumentor.should != nil
+    Restikle::ResourceManager.load_schema(file: 'schema_rails.rb',                  remove_from_entities: 'spree_')
+    Restikle::ResourceManager.load_routes(file: 'tillless-commerce-api-routes.txt', remove_from_paths:    '/api/')
   end
 
   it 'should have URL requests and JSON responses' do
@@ -106,7 +108,7 @@ EOF
   end
 
   it 'should have the api_url set to something sensible' do
-    api_url = 'http://api.tillless.com/api/'
+    api_url = URL_FOR_SPECS
     @rsmgr.should != nil
     @rsmgr.api_url.should != nil
     @rsmgr.set_api_url api_url

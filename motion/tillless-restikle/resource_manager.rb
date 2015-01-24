@@ -53,6 +53,34 @@ module Restikle
         self
       end
 
+      # Parse routes and create an array of Restikle::Route instances, available via #routes
+      # If args is a string, assume it is a filename, otherwise:
+      #  :data               data to process (as a string)
+      #  :file               path to routes file
+      #  :remove_from_paths  string to uniformly remove from route paths (eg '/api/1')
+      def load_routes(args={})
+        instrumentor.load_routes(args)
+      end
+
+      # Return routes currently configured #instrumentor
+      def routes
+        instrumentor.routes
+      end
+
+      # Parse schema and create an array of Restikle::Entity instances, available via #entities.
+      # If args is a string, assume it is a filename, otherwise:
+      #  :data                  data to process (as a string)
+      #  :file                  path to schema file
+      #  :remove_from_entities  string to uniformly remove from table names
+      def load_schema(args={})
+        instrumentor.load_schema(args)
+      end
+
+      # Return entities currently configured #instrumentor 
+      def entities
+        instrumentor.entities
+      end
+
       def default_pagination_mapping
         @pagination_mapping ||= begin
           @pagination_mapping = RKObjectMapping.mappingForClass(RKPaginator)
