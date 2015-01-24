@@ -8,6 +8,8 @@ module Restikle
       super(args).tap do |i|
         i.remove_from_paths    = args[:remove_from_paths]
         i.remove_from_entities = args[:remove_from_entities]
+        i.entities = []
+        i.routes   = []
       end
     end
 

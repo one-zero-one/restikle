@@ -19,6 +19,7 @@ require 'bubble-wrap'
 require 'bubble-wrap/all'
 require 'sugarcube-all'
 require 'motion-support/inflector'
+require 'webstub'
 require 'tillless-restikle'
 
 Motion::Project::App.setup do |app|

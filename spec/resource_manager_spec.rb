@@ -1,4 +1,6 @@
 describe Restikle::ResourceManager do
+  extend WebStub::SpecHelpers
+
   before do
     CDQ.cdq.setup
   end
@@ -23,6 +25,12 @@ describe Restikle::ResourceManager do
     Restikle::ResourceManager.instrumentor.should == @instr
   end
 
+  it 'should create an Instrumentor if one is not provided' do
+    rmgr = Restikle::ResourceManager.setup
+    rmgr.should != nil
+    rmgr.instrumentor.should != nil
+  end
+
   it 'should find all entities that exist in both CDQ model and Restikle::Instrumentor' do
     @instr.should != nil
     @rsmgr.should != nil
@@ -37,5 +45,4 @@ describe Restikle::ResourceManager do
       matched.should == true
     end
   end
-
 end
