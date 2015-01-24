@@ -91,7 +91,7 @@ EOF
   end
 
   it 'should exist and be setup' do
-    @rsmgr = Restikle::ResourceManager.setup(@instr)
+    @rsmgr = Restikle::ResourceManager.setup
     @rsmgr.should != nil
     Restikle::ResourceManager.instrumentor.load_schema(file: 'schema_rails.rb',                  remove_from_entities: 'spree_')
     Restikle::ResourceManager.instrumentor.load_routes(file: 'tillless-commerce-api-routes.txt', remove_from_paths:    '/api/')
