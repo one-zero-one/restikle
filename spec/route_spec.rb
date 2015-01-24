@@ -41,4 +41,40 @@ describe Restikle::Route do
     end
   end
 
+  it 'should be able to infer resource relationships from a simple route' do
+    args = {
+      remove_from_paths: '/api/',
+      name:              'api_classifications',
+      verb:              'PUT',
+      path:              'classifications',
+      ctrl:              'spree/api/classifications#update'
+    }
+    route = Restikle::Route.new(args)
+    root_resource     = route.root_resource
+    related_resources = route.related_resources
+
+    root_resource.should == 'Classification'
+    related_resources.size.should == 0
+  end
+
+
+  it 'should be able to infer resource relationships from a complex route' do
+    args = {
+      remove_from_paths: '/api/',
+      name:              'api_checkout_line_item',
+      verb:              'GET',
+      path:              'checkouts/:checkout_id/line_items/:id/third/:id/fourth/:fourth_id',
+      ctrl:              'spree/api/line_items#show'
+    }
+    route = Restikle::Route.new(args)
+    root_resource     = route.root_resource
+    related_resources = route.related_resources
+
+    root_resource.should == 'Checkout'
+    related_resources.size.should == 3
+    related_resources[0].should == 'LineItem'
+    related_resources[1].should == 'Third'
+    related_resources[2].should == 'Fourth'
+  end
+
 end

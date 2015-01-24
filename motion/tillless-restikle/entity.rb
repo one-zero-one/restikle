@@ -48,5 +48,10 @@ module Restikle
     def to_s
       "#{@entity_name}"
     end
+
+    # For sorting assume that entity_name is the sort variable
+    def <=> (other) #1 if self>other; 0 if self==other; -1 if self<other
+      @entity_name <=> other.entity_name
+    end
   end
 end

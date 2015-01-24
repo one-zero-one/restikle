@@ -14,6 +14,12 @@ describe Restikle::ResourceManager do
     rsmgr.should != nil
   end
 
+  it 'should create an Instrumentor if one is not provided' do
+    rmgr = Restikle::ResourceManager.setup
+    rmgr.should != nil
+    rmgr.instrumentor.should != nil
+  end
+
   it 'should work with the Instrumentor' do
     @instr = Restikle::Instrumentor.new
     @instr.load_schema(file: 'schema_rails.rb',                  remove_from_entities: 'spree_')
@@ -23,12 +29,6 @@ describe Restikle::ResourceManager do
     @rsmgr = Restikle::ResourceManager.setup(@instr)
     @rsmgr.should != nil
     Restikle::ResourceManager.instrumentor.should == @instr
-  end
-
-  it 'should create an Instrumentor if one is not provided' do
-    rmgr = Restikle::ResourceManager.setup
-    rmgr.should != nil
-    rmgr.instrumentor.should != nil
   end
 
   it 'should find all entities that exist in both CDQ model and Restikle::Instrumentor' do
@@ -44,5 +44,19 @@ describe Restikle::ResourceManager do
       puts "Looked for: #{cdq_entity.name} ... was not found!" unless matched
       matched.should == true
     end
+  end
+
+  it 'should be able to infer relationships from routes and entities' do
+    @rsmgr.should != nil
+    @instr.should == Restikle::ResourceManager.instrumentor
+    routes   = @rsmgr.routes
+    entities = @rsmgr.entities
+    routes.should   == Restikle::ResourceManager.instrumentor.routes
+    entities.should == Restikle::ResourceManager.instrumentor.entities
+    routes.size.should   >= 0
+    entities.size.should >= 0
+    relationships = @rsmgr.relationships
+    relationships.should != nil
+    relationships.size.should >= 0
   end
 end

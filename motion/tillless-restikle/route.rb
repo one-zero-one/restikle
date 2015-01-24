@@ -32,7 +32,37 @@ module Restikle
       ctrl ||= ''
       path.gsub!(@remove_from_paths, '') if @remove_from_paths
       path.gsub!(/\(\.:format\)/, '')
-      [ name.strip, verb.strip, path.strip, ctrl.strip ]
+      [name.strip, verb.strip, path.strip, ctrl.strip]
+    end
+
+    # Return the resource name of the root resource of the route. For example, if
+    # #path is 'checkouts/:checkout_id/line_items/:id', then #route_resource
+    # should be 'Checkout'.
+    def root_resource
+      return nil unless @path
+      if @path =~ /:/
+        route_resource = @path.scan(/(\w*)\/:(\w*)/)
+        route_resource ? route_resource[0][0].singularize.camelize : nil
+      else
+        @path.singularize.camelize
+      end
+    end
+
+    # Return an array of resource names for any dependent resources of the resource.
+    # For example, if #path is 'checkouts/:checkout_id/line_items/:id', then
+    # #related_resources should be ['LineItems']. If #path contains more than one
+    # related entity, then the array contains each nested resource in order.
+    def related_resources
+      return nil unless @path
+      related_resources = []
+      resources = @path.scan(/(\w*)\/:(\w*)/)
+      if resources
+        resources.shift
+        resources.each do |rsrc|
+          related_resources << rsrc[0].singularize.camelize
+        end
+      end
+      related_resources
     end
 
     # True if the route has valid values for name, verb, path and ctrl
@@ -58,6 +88,11 @@ module Restikle
     # Human readable output
     def to_s
       "#{@name}, #{@verb}, #{@path}, #{@ctrl}"
+    end
+
+    # For sorting assume that path is the sort variable
+    def <=> (other) #1 if self>other; 0 if self==other; -1 if self<other
+      @path <=> other.path
     end
   end
 end

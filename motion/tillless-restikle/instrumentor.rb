@@ -143,6 +143,31 @@ module Restikle
       attrs
     end
 
+    # Return the set of relationships currently implied by the relatonship between known
+    # routes and entities. Assume that entities are the source of truth, then try to find
+    # any routes that reference those entities, and then define a relationship for each
+    # #related_resource in each #route that matches a known #entity.
+    def relationships
+      @relationships = {}
+      @entities.sort.each do |entity|
+        @routes.sort.each do |route|
+          root_resource     = route.root_resource
+          related_resources = route.related_resources
+          if root_resource == entity.entity_name && related_resources.size > 0
+            if @relationships[root_resource]
+              @relationships[root_resource] += related_resources
+            else
+              @relationships[root_resource] = related_resources
+            end
+          end
+        end
+      end
+      @relationships.values.each do |rels|
+        rels.uniq!
+      end
+      @relationships
+    end
+
     def manager
       Restikle::ResourceManager.manager
     end

@@ -62,7 +62,7 @@ module Restikle
         instrumentor.load_routes(args)
       end
 
-      # Return routes currently configured #instrumentor
+      # Return routes currently configured in #instrumentor
       def routes
         instrumentor.routes
       end
@@ -76,9 +76,14 @@ module Restikle
         instrumentor.load_schema(args)
       end
 
-      # Return entities currently configured #instrumentor 
+      # Return entities currently configured in #instrumentor
       def entities
         instrumentor.entities
+      end
+
+      # Return implied relationships currently configured in #instrumentor
+      def relationships
+        instrumentor.relationships
       end
 
       def default_pagination_mapping

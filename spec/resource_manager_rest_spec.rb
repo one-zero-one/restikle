@@ -96,8 +96,12 @@ EOF
     @rsmgr = Restikle::ResourceManager.setup
     @rsmgr.should != nil
     Restikle::ResourceManager.instrumentor.should != nil
-    Restikle::ResourceManager.load_schema(file: 'schema_rails.rb',                  remove_from_entities: 'spree_')
-    Restikle::ResourceManager.load_routes(file: 'tillless-commerce-api-routes.txt', remove_from_paths:    '/api/')
+    Restikle::ResourceManager.load_schema(
+      file: 'schema_rails.rb', remove_from_entities: 'spree_')
+      .should == true 
+    Restikle::ResourceManager.load_routes(
+      file: 'tillless-commerce-api-routes.txt', remove_from_paths: '/api/')
+      .should == true
   end
 
   it 'should have URL requests and JSON responses' do
