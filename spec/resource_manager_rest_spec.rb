@@ -92,15 +92,30 @@ EOF
     reset_stubs
   end
 
+  it 'should reset' do
+    Restikle::ResourceManager.reset!.should == true
+    @rsmgr = nil
+  end
+
   it 'should exist and be setup' do
     @rsmgr = Restikle::ResourceManager.setup
     @rsmgr.should != nil
+
     Restikle::ResourceManager.instrumentor.should != nil
+
     Restikle::ResourceManager.load_schema(
       file: 'schema_rails.rb', remove_from_entities: 'spree_')
-      .should == true 
+      .should == true
+
     Restikle::ResourceManager.load_routes(
       file: 'tillless-commerce-api-routes.txt', remove_from_paths: '/api/')
+      .should == true
+  end
+
+  it 'should build RestKit mappings from routes, entities and relationships' do
+    @rsmgr.should != nil
+
+    Restikle::ResourceManager.build_mappings
       .should == true
   end
 

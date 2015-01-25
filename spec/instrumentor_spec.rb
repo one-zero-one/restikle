@@ -75,38 +75,16 @@ describe Restikle::Instrumentor do
     end
   end
 
-  it 'should work with the ResourceManager' do
-    @instr = Restikle::Instrumentor.new
-    @instr.load_schema(file: 'schema_rails.rb',                  remove_from_entities: 'spree_')
-    @instr.load_routes(file: 'tillless-commerce-api-routes.txt', remove_from_paths:    '/api/')
-    @instr.should != nil
-
-    @rsmgr = Restikle::ResourceManager.setup(@instr)
-    @rsmgr.should != nil
-    Restikle::ResourceManager.instrumentor.should == @instr
-  end
-
-  it 'should allow for configuration of API keys' do
-    @rsmgr.should != nil
-    @rsmgr.add_headers('X-Spree-Token' => '5b7ee7b72bb606a354b9c5dc2dfc01ee510ed7c272502050')
-    @rsmgr.headers['X-Spree-Token'].should != nil
-  end
-
-  it 'should allow for the API url to be set' do
-    api_url = 'http://localhost:3200/api/'
-
-    @rsmgr.should != nil
-    @rsmgr.api_url.should != nil
-    @rsmgr.set_api_url api_url
-    @rsmgr.api_url.should == api_url
-  end
-
   it 'should provide RestKit mappings for an entity' do
-    @instr.should != nil
-    @rsmgr.should != nil
+    instr = Restikle::Instrumentor.new
+    instr.load_schema(data: @rails_schema_string, remove_from_entities: 'spree_')
+    instr.load_routes(data: @rails_routes_string, remove_from_paths: '/api/')
+    instr.should != nil
+    instr.entities.size > 0
+    instr.routes.size > 0
 
-    @instr.entities.each do |entity|
-      mappings = @instr.restkit_mappings_for(entity.entity_name)
+    instr.entities.each do |entity|
+      mappings = instr.rk_mappings_for(entity.entity_name)
       mappings.should != nil
       mappings.each do |mapping|
         mapping[:route].should != nil
@@ -114,24 +92,26 @@ describe Restikle::Instrumentor do
         mapping[:request_descriptor][:request_mapping].class.should == RKObjectMapping
         mapping[:request_descriptor][:object_class].should          == entity.entity_name
         mapping[:request_descriptor][:root_key_path].should         == mapping[:route].path
-        mapping[:request_descriptor][:method].should                == @instr.rk_request_method_for(mapping[:route].verb)
+        mapping[:request_descriptor][:method].should                == instr.rk_request_method_for(mapping[:route].verb)
         mapping[:response_descriptor].should != nil
         mapping[:response_descriptor][:response_mapping].should     != nil
         mapping[:response_descriptor][:path_pattern].should         == mapping[:route].path
         mapping[:response_descriptor][:key_path].should             == nil
-        mapping[:response_descriptor][:method].should               == @instr.rk_request_method_for(mapping[:route].verb)
+        mapping[:response_descriptor][:method].should               == instr.rk_request_method_for(mapping[:route].verb)
         mapping[:response_descriptor][:status_codes].should         == RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)
-        # puts  " "
-        # puts  "    entity: #{entity}"
-        # puts  "   request: #{mapping[:route].verb} #{mapping[:request_descriptor][:root_key_path]}"
-        # id_attrs = []
-        # mapping[:response_descriptor][:response_mapping].identificationAttributes.each do |attr|
-        #   id_attrs << "#{attr.attributeValueClassName}:#{attr.attributeType}"
-        # end
-        # puts "  id attrs: #{id_attrs}"
-        # puts "resp attrs: #{mapping[:response_descriptor][:response_mapping].entity.attributesByName.keys}"
-        # puts "  "
       end
     end
+  end
+
+  it 'should be reset-able' do
+    instr = Restikle::Instrumentor.new
+    instr.load_schema(data: @rails_schema_string, remove_from_entities: 'spree_')
+    instr.load_routes(data: @rails_routes_string, remove_from_paths: '/api/')
+    instr.should != nil
+    instr.entities.size > 0
+    instr.routes.size > 0
+    instr.reset!
+    instr.entities.size.should == 0
+    instr.routes.size.should == 0
   end
 end

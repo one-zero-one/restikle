@@ -3,12 +3,6 @@ module Restikle
     class << self
       include CDQ
 
-      def reset
-        @instrumentor = nil
-        @manager = nil
-        @store = nil
-      end
-
       def instrumentor
         @instrumentor ||= Restikle::Instrumentor.new
       end
@@ -17,35 +11,6 @@ module Restikle
         # NSLog "Restikle::ResourceManager.setup: #{api_url}"
         RKObjectManager.sharedManager = _manager
         @instrumentor = instr
-
-        # Build mappers from instrumentor.routes and instrumentor.entities
-        if instrumentor
-          instrumentor.entities.each do |entity|
-            mappings = instrumentor.restkit_mappings_for(entity.entity_name)
-            mappings.each do |mapping|
-              # NSLog "Restikle::ResourceManager.setup: #{mapping[:route].verb}:#{mapping[:route].path}"
-              _manager.addRequestDescriptor(
-                RKRequestDescriptor.requestDescriptorWithMapping(
-                  mapping[:request_descriptor][:request_mapping],
-                  objectClass: mapping[:request_descriptor][:object_class],
-                  rootKeyPath: mapping[:request_descriptor][:root_key_path],
-                  method: mapping[:request_descriptor][:method]
-                )
-              )
-              _manager.addResponseDescriptor(
-                RKResponseDescriptor.responseDescriptorWithMapping(
-                  mapping[:response_descriptor][:response_mapping],
-                  method: mapping[:response_descriptor][:method],
-                  pathPattern: mapping[:response_descriptor][:path_pattern],
-                  keyPath: mapping[:response_descriptor][:key_path],
-                  statusCodes: mapping[:response_descriptor][:status_codes]
-                )
-              )
-            end
-          end
-        else
-          NSLog 'Restikle::ResourceManager.setup: no instrumentor is configured, so no RestKit mappings loaded'
-        end
 
         # Configure pagination settings
         _manager.setPaginationMapping(default_pagination_mapping)
@@ -84,6 +49,12 @@ module Restikle
       # Return implied relationships currently configured in #instrumentor
       def relationships
         instrumentor.relationships
+      end
+
+      # Use the contents of #routes, #entities and #relationships to assemble a
+      # set of RestKit resource mappings.
+      def build_mappings
+        instrumentor.build_mappings(_manager)
       end
 
       def default_pagination_mapping
@@ -141,13 +112,14 @@ module Restikle
         end
       end
 
-      private
-
       def reset!
         @manager = nil
         @store = nil
-        setup @instrumentor
+        @instrumentor = nil
+        true
       end
+
+      private
 
       def _manager
         @manager ||= RKObjectManager.managerWithBaseURL(NSURL.URLWithString(api_url)).tap do |m|

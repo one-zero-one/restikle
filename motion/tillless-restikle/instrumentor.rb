@@ -13,6 +13,13 @@ module Restikle
       end
     end
 
+    # Reset the instrumentor back to unused state.
+    def reset!
+      @entities = []
+      @routes = []
+      @relationships = nil
+    end
+
     # Parse routes and create an array of Restikle::Route instances, available via #routes
     # If args is a string, assume it is a filename, otherwise:
     #  :data               data to process (as a string)
@@ -86,6 +93,36 @@ module Restikle
       end
     end
 
+    # Use the contents of #routes, #entities and #relationships to assemble a
+    # set of RestKit resource mappings. Unless mgr is provided, Instrumentor
+    # will make use of Restikle::ResourceManager.manager.
+    def build_mappings(mgr)
+      mgr ||= manager
+      @entities.each do |entity|
+        mappings = rk_mappings_for(entity.entity_name)
+        mappings.each do |mapping|
+          mgr.addRequestDescriptor(
+            RKRequestDescriptor.requestDescriptorWithMapping(
+              mapping[:request_descriptor][:request_mapping],
+              objectClass: mapping[:request_descriptor][:object_class],
+              rootKeyPath: mapping[:request_descriptor][:root_key_path],
+              method: mapping[:request_descriptor][:method]
+            )
+          )
+          mgr.addResponseDescriptor(
+            RKResponseDescriptor.responseDescriptorWithMapping(
+              mapping[:response_descriptor][:response_mapping],
+              method: mapping[:response_descriptor][:method],
+              pathPattern: mapping[:response_descriptor][:path_pattern],
+              keyPath: mapping[:response_descriptor][:key_path],
+              statusCodes: mapping[:response_descriptor][:status_codes]
+            )
+          )
+        end
+      end
+      true
+    end
+
     def cdq_attributes_for_entity(entity_name)
       out = ""
       attrs = {}
@@ -102,7 +139,7 @@ module Restikle
     # Build a RestKit request and response mapping for each path for entity, where entity_name
     # is known to Restkile following loading of routes and schema files. Response is an array
     # of mappings, with each item: [ { route: {}, request_description: {}, response_descriptor: {} }]
-    def restkit_mappings_for(entity_name)
+    def rk_mappings_for(entity_name)
       mappings = []
       entity = @entities.find {|e| e.entity_name == entity_name}
       if entity
@@ -148,24 +185,24 @@ module Restikle
     # any routes that reference those entities, and then define a relationship for each
     # #related_resource in each #route that matches a known #entity.
     def relationships
-      @relationships = {}
-      @entities.sort.each do |entity|
-        @routes.sort.each do |route|
-          root_resource     = route.root_resource
-          related_resources = route.related_resources
-          if root_resource == entity.entity_name && related_resources.size > 0
-            if @relationships[root_resource]
-              @relationships[root_resource] += related_resources
-            else
-              @relationships[root_resource] = related_resources
+      @relationships ||= Hash.new.tap do |relns|
+        @entities.each do |entity|
+          @routes.each do |route|
+            root_resource     = route.root_resource
+            related_resources = route.related_resources
+            if root_resource == entity.entity_name && related_resources.size > 0
+              if relns[root_resource]
+                relns[root_resource] += related_resources
+              else
+                relns[root_resource] = related_resources
+              end
             end
           end
         end
+        relns.values.each do |rels|
+          rels.uniq!
+        end
       end
-      @relationships.values.each do |rels|
-        rels.uniq!
-      end
-      @relationships
     end
 
     def manager
