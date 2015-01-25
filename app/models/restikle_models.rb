@@ -219,4 +219,3 @@ end
 
 class Zone < CDQManagedObject
 end
-

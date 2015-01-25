@@ -99,8 +99,7 @@ module Restikle
     def build_mappings(mgr)
       mgr ||= manager
       @entities.each do |entity|
-        mappings = rk_mappings_for(entity.entity_name)
-        mappings.each do |mapping|
+        rk_mappings_for(entity.entity_name, related_entities_for(entity.entity_name)).each do |mapping|
           mgr.addRequestDescriptor(
             RKRequestDescriptor.requestDescriptorWithMapping(
               mapping[:request_descriptor][:request_mapping],
@@ -136,15 +135,18 @@ module Restikle
       out
     end
 
-    # Build a RestKit request and response mapping for each path for entity, where entity_name
-    # is known to Restkile following loading of routes and schema files. Response is an array
-    # of mappings, with each item: [ { route: {}, request_description: {}, response_descriptor: {} }]
-    def rk_mappings_for(entity_name)
+    # Build a RestKit request and response mapping for each path for entity,
+    # where entity_name is known to Restkile following loading of routes and
+    # schema files. Response is an array of mappings, with each item:
+    # [ { route: {}, request_description: {}, response_descriptor: {} }]
+    # If related_entities is provided, then RK property mappings will also
+    # be made for each.
+    def rk_mappings_for(entity_name, related_entities=[])
       mappings = []
       entity = @entities.find {|e| e.entity_name == entity_name}
       if entity
         @routes.each do |route|
-          if route.path.index(entity.entity_name.underscore)
+          if route.path.index(entity.entity_name.pluralize.underscore)
             mappings << {
               route: route,
               request_descriptor: {
@@ -154,9 +156,9 @@ module Restikle
                 method:           rk_request_method_for(route.verb)
               },
               response_descriptor: {
-                response_mapping: rk_mapping_for_entity_for_name(entity.entity_name),
+                response_mapping: rk_mapping_for_entity_for_name(entity.entity_name, related_entities),
                 path_pattern:     route.path,
-                key_path:         nil,
+                key_path:         '',
                 method:           rk_request_method_for(route.verb),
                 status_codes:     RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)
               }
@@ -167,9 +169,26 @@ module Restikle
       mappings
     end
 
-    def rk_mapping_for_entity_for_name(entity_name)
-      RKEntityMapping.mappingForEntityForName(entity_name, inManagedObjectStore: store).tap do |m|
-        m.addAttributeMappingsFromArray(attributes_for_entity(entity_name))
+    def rk_mapping_for_entity_for_name(entity_name, related_entities=[])
+      RKEntityMapping.mappingForEntityForName(entity_name, inManagedObjectStore: store).tap do |outer|
+        outer.addAttributeMappingsFromArray(attributes_for_entity(entity_name))
+        related_entities.each do |related_entity|
+          # Only build property mappings for related_entities that we know
+          # have been defined from the currently loaded schema, otherwise
+          # RestKit won't be able to map onto those entities
+          if entities.any? { |ent| ent.entity_name == related_entity}
+            RKEntityMapping.mappingForEntityForName(related_entity, inManagedObjectStore: store).tap do |inner|
+              inner.addAttributeMappingsFromArray(attributes_for_entity(related_entity))
+              outer.addPropertyMapping(
+                RKRelationshipMapping.relationshipMappingFromKeyPath(
+                  related_entity.pluralize.underscore,
+                  toKeyPath: "#{related_entity.pluralize.underscore}",
+                  withMapping: inner
+                )
+              )
+            end
+          end
+        end
       end
     end
 
@@ -180,6 +199,14 @@ module Restikle
       attrs
     end
 
+    # Return an array of related entities for entity name. Result is an array of
+    # entity names, and assumes that nested entities are named according to usual
+    # Rails convention such that a resource of the form `entities/related_entities/:id`
+    # would imply a property of `related_entity_id` in entity `Entity`.
+    def related_entities_for(entity_name)
+      relationships[entity_name] || []
+    end
+
     # Return the set of relationships currently implied by the relatonship between known
     # routes and entities. Assume that entities are the source of truth, then try to find
     # any routes that reference those entities, and then define a relationship for each
@@ -188,20 +215,16 @@ module Restikle
       @relationships ||= Hash.new.tap do |relns|
         @entities.each do |entity|
           @routes.each do |route|
-            root_resource     = route.root_resource
-            related_resources = route.related_resources
-            if root_resource == entity.entity_name && related_resources.size > 0
-              if relns[root_resource]
-                relns[root_resource] += related_resources
+            if route.root_resource == entity.entity_name && route.related_resources.size > 0
+              if relns[route.root_resource]
+                relns[route.root_resource] += route.related_resources
               else
-                relns[root_resource] = related_resources
+                relns[route.root_resource] = route.related_resources
               end
             end
           end
         end
-        relns.values.each do |rels|
-          rels.uniq!
-        end
+        relns.values.each &:uniq!
       end
     end
 
@@ -213,12 +236,12 @@ module Restikle
     end
 
     # Dump out the paths registred in @routes for each of the @entities
-    def log_paths_for_entities
+    def dump_paths_for_entities
       @entities.each do |entity|
-        NSLog entity.entity_name
+        puts entity.entity_name
         @routes.each do |route|
-          if route.path.index(entity.entity_name)
-            NSLog "  #{route.verb.ljust(7)} #{route.path}"
+          if route.path.index(entity.entity_name.pluralize.underscore)
+            puts "  #{route.verb.ljust(7)} #{route.path}"
           end
         end
       end

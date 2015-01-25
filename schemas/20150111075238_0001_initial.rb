@@ -82,6 +82,7 @@ schema "20150111075238" do
     integer64  :numcode
     boolean    :states_required, default: false
     datetime   :updated_at
+    has_many   :states
   end
   entity "CreditCard" do
     integer64  :id, default: -1
@@ -566,6 +567,7 @@ schema "20150111075238" do
     string     :abbr
     integer64  :country_id
     datetime   :updated_at
+    belongs_to :country
   end
   entity "StockItem" do
     integer64  :id, default: -1

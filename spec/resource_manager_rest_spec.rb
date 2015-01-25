@@ -3,7 +3,7 @@ describe "#{Restikle::ResourceManager} REST" do
 
   URL_FOR_SPECS = 'http://api.tillless.com/api/'
 
-  URL_FOR_GET_STATES_1  = "#{Restikle::ResourceManager.api_url}/states/1"
+  URL_FOR_GET_STATES_1  = 'http://api.tillless.com/api/states/1'
   JSON_FOR_GET_STATES_1 = BW::JSON.parse <<EOF
 {
   "id": 1,
@@ -13,7 +13,7 @@ describe "#{Restikle::ResourceManager} REST" do
 }
 EOF
 
-  URL_FOR_GET_COUNTRIES_1  = "#{Restikle::ResourceManager.api_url}/countries/1"
+  URL_FOR_GET_COUNTRIES_1  = 'http://api.tillless.com/api/countries/1'
   JSON_FOR_GET_COUNTRIES_1 = BW::JSON.parse <<EOF
 {
   "id": 1,
@@ -97,28 +97,6 @@ EOF
     @rsmgr = nil
   end
 
-  it 'should exist and be setup' do
-    @rsmgr = Restikle::ResourceManager.setup
-    @rsmgr.should != nil
-
-    Restikle::ResourceManager.instrumentor.should != nil
-
-    Restikle::ResourceManager.load_schema(
-      file: 'schema_rails.rb', remove_from_entities: 'spree_')
-      .should == true
-
-    Restikle::ResourceManager.load_routes(
-      file: 'tillless-commerce-api-routes.txt', remove_from_paths: '/api/')
-      .should == true
-  end
-
-  it 'should build RestKit mappings from routes, entities and relationships' do
-    @rsmgr.should != nil
-
-    Restikle::ResourceManager.build_mappings
-      .should == true
-  end
-
   it 'should have URL requests and JSON responses' do
     URL_FOR_GET_STATES_1.should     == 'http://api.tillless.com/api/states/1'
     JSON_FOR_GET_STATES_1.should    != nil
@@ -128,11 +106,44 @@ EOF
 
   it 'should have the api_url set to something sensible' do
     api_url = URL_FOR_SPECS
-    @rsmgr.should != nil
-    @rsmgr.api_url.should != nil
-    @rsmgr.set_api_url api_url
-    @rsmgr.api_url.should == api_url
+
+    Restikle::ResourceManager.api_url.should != nil
+    Restikle::ResourceManager.set_api_url api_url
+    Restikle::ResourceManager.api_url.should == api_url
   end
+
+  it 'should exist and be setup' do
+    @rsmgr = Restikle::ResourceManager.setup
+    @rsmgr.should != nil
+
+    Restikle::ResourceManager.instrumentor.should != nil
+
+    Restikle::ResourceManager.load_schema(
+      file: 'schema_rails.rb', remove_from_entities: 'spree_')
+      .should == true
+    Restikle::ResourceManager.entities.size.should > 0
+
+    Restikle::ResourceManager.load_routes(
+      file: 'tillless-commerce-api-routes.txt', remove_from_paths: '/api/')
+      .should == true
+    Restikle::ResourceManager.routes.size.should > 0
+
+    Restikle::ResourceManager.relationships.should != nil
+  end
+
+  it 'should build RestKit mappings from routes, entities and relationships' do
+    @rsmgr.should != nil
+
+    Restikle::ResourceManager.build_mappings
+      .should == true
+  end
+
+  # it 'should dump out its config' do
+  #   puts ' '
+  #   Restikle::ResourceManager.instrumentor.dump_paths_for_entities
+  #   puts ' '
+  #   true.should == true
+  # end
 
   it 'should allow a simple (non-nested) get call to the back-end (states/1)' do
     @rsmgr.should != nil
