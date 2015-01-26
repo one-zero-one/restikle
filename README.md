@@ -16,6 +16,12 @@ Or install it yourself as:
 
     $ gem install restikle
 
+
+## Note: very preliminary release
+
+This is a very, very early 0.0.1 release of `restikle`. Please do not rely it for production code. In fact, I would not recommend relying on it at all the moment. At least until it gets towards a 0.1.0 release.
+
+
 ## Background
 
 Restikle is designed to make it easy to create all of the runtime integration components necessary for an iOS app using [CoreData](https://developer.apple.com/library/ios/documentation/Cocoa/Conceptual/CoreData/Articles/cdBasics.html), [RestKit](https://github.com/RestKit/RestKit), and [CDQ](https://github.com/infinitered/cdq) to talk to a RESTful Rails back-end.
