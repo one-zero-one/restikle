@@ -70,7 +70,7 @@ EOF
 EOF
 
   # Run once at the beginning to set up CDQ before all tests
-  describe 'setup CDQ' do
+  describe "#{Restikle::ResourceManager} CDQ setup" do
     it 'should setup CDQ' do
       CDQ.cdq.setup
       true.should == true
@@ -79,7 +79,7 @@ EOF
 
 
   # REST specs (separated from CDQ setup / reset)
-  describe 'run REST specs' do
+  describe "#{Restikle::ResourceManager} and #{Restikle::Rest} specs" do
 
     before do
       setup_rest_web_stubs
@@ -101,6 +101,9 @@ EOF
     def teardown_rest_web_stubs
       reset_stubs
     end
+
+
+    # Restikle::ResourceManager REST capabilities
 
     it 'should reset' do
       Restikle::ResourceManager.reset!.should == true
@@ -230,11 +233,58 @@ EOF
         # puts "@country: #{@country.inspect}"
       end
     end
+
+
+    # Restikle::Rest HTTP verbs
+
+    it "#{Restikle::Rest} should support HTTP get" do
+      @rsmgr.should != nil
+
+      @status = :unknown
+      @state = State.where(:id).eq(1).first
+      Restikle::Rest.get(
+      @state,
+      path: 'states/1',
+      success: ->(op,res) {
+        puts  "\n  - op: #{op}"
+        print  "  - res: #{res}"
+        cdq.save
+        @status = :success
+        resume
+      },
+      failure: ->(op,err) {
+        puts  "\n  - op: #{op}"
+        print  "  - err: #{err}"
+        @status = :failed
+        resume
+      }
+      )
+
+      wait_max 20.0 do
+        @status.should != :failed
+        @status.should != :unknown
+        @status.should == :success
+
+        @state = State.where(:id).eq(1).first
+        @state.should != nil
+        @state.id.should == 1
+        # puts "@state: #{@state.inspect}"
+      end
+
+    end
+
+    # TODO
+    # it "#{Restikle::Rest} should support HTTP post"
+    # it "#{Restikle::Rest} should support HTTP put"
+    # it "#{Restikle::Rest} should support HTTP delete"
+    # it "#{Restikle::Rest} should support HTTP head"
+    # it "#{Restikle::Rest} should support HTTP patch"
+
   end
 
 
   # Tear down CDQ after all REST tests
-  describe 'reset CDQ' do
+  describe "#{Restikle::ResourceManager} CDQ reset" do
     it 'should reset CDQ' do
       CDQ.cdq.reset!
       true.should == true
