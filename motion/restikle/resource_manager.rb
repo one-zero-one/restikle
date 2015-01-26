@@ -57,6 +57,12 @@ module Restikle
         instrumentor.build_mappings(_manager)
       end
 
+      # Number of RestKit mappings created on last run, or 0 if
+      # #build_mappings has not been called.
+      def mappings_created
+        instrumentor.mappings_created
+      end
+
       def default_pagination_mapping
         @pagination_mapping ||= begin
           @pagination_mapping = RKObjectMapping.mappingForClass(RKPaginator)

@@ -15,6 +15,7 @@ module Restikle
     # set of RestKit resource mappings. Unless mgr is provided, Instrumentor
     # will make use of Restikle::ResourceManager.manager.
     def build_mappings(mgr)
+      @mappings_created = 0
       mgr ||= manager
       @entities.each do |entity|
         rk_mappings_for(entity.entity_name, related_entities_for(entity.entity_name)).each do |mapping|
@@ -35,9 +36,16 @@ module Restikle
               statusCodes: mapping[:response_descriptor][:status_codes]
             )
           )
+          @mappings_created += 1
         end
       end
       true
+    end
+
+    # Number of RestKit mappings created on last run, or 0 if
+    # #build_mappings has not been called.
+    def mappings_created
+      @mappings_created || 0
     end
 
     def cdq_attributes_for_entity(entity_name)

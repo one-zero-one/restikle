@@ -1,8 +1,8 @@
 # -*- encoding: utf-8 -*-
-require File.expand_path('../lib/tillless-restikle/version', __FILE__)
+require File.expand_path('../lib/restikle/version', __FILE__)
 
 Gem::Specification.new do |spec|
-  spec.name          = "tillless-restikle"
+  spec.name          = "restikle"
   spec.version       = Restikle::VERSION
   spec.authors       = ["tillless", "matthewsinclair"]
   spec.email         = ["matthew.sinclair@tillless.com"]
@@ -28,7 +28,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'bubble-wrap'          #, '~> 1.7.1'
   spec.add_dependency 'ib'                   #, '~> 0.7.1'
   spec.add_dependency 'cdq'                  #, '~> 0.1.11'
-  spec.add_dependency 'sugarcube'            #, '~> 3.0.7'
+  spec.add_dependency 'sugarcube'            #, '~> 3.1.1'
 
   spec.add_development_dependency 'bundler'        #, '~> 1.7.9'
   spec.add_development_dependency 'rake'           #, '~> 10.4.2'

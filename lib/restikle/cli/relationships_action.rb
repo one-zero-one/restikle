@@ -1,9 +1,9 @@
-require "tillless-restikle/version"
-require 'tillless-restikle/cli/parser'
-require 'tillless-restikle/cli/cli'
-require 'tillless-restikle/concepts/entity'
-require 'tillless-restikle/concepts/route'
-require 'tillless-restikle/concepts/generator'
+require 'restikle/version'
+require 'restikle/cli/parser'
+require 'restikle/cli/cli'
+require 'restikle/concepts/entity'
+require 'restikle/concepts/route'
+require 'restikle/concepts/generator'
 
 module Restikle
   class RelationshipsAction < Restikle::CommandLine

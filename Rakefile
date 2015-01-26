@@ -20,11 +20,11 @@ require 'bubble-wrap/all'
 require 'sugarcube-all'
 require 'motion-support/inflector'
 require 'webstub'
-require 'tillless-restikle'
+require 'restikle'
 
 Motion::Project::App.setup do |app|
-  app.name                 = 'T-Restikle'
-  app.identifier           = 'com.tillless.tillless-restikle-R100'
+  app.name                 = 'Restikle'
+  app.identifier           = 'com.tillless.restikle-R100'
   app.codesign_certificate = 'iPhone Developer: Matthew Sinclair (J9CF96HZ49)'
   app.provisioning_profile = 'provisioning/iOS_Team_Provisioning_Profile_.mobileprovision'
 
@@ -35,7 +35,7 @@ Motion::Project::App.setup do |app|
   app.interface_orientations = [:portrait]
 
   if ARGV.include? 'spec'
-    app.name = 'T-Restikle Spec'
+    app.name = 'Restikle Spec'
   end
 
   app.pods do

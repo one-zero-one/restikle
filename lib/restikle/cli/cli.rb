@@ -1,8 +1,8 @@
-require "tillless-restikle/version"
-require 'tillless-restikle/cli/parser'
-require 'tillless-restikle/concepts/entity'
-require 'tillless-restikle/concepts/route'
-require 'tillless-restikle/concepts/generator'
+require 'restikle/version'
+require 'restikle/cli/parser'
+require 'restikle/concepts/entity'
+require 'restikle/concepts/route'
+require 'restikle/concepts/generator'
 
 module Restikle
   class CommandLine
@@ -53,7 +53,7 @@ Options:
     end
 
     def log(str)
-      STDERR.print str if @debug 
+      STDERR.print str if @debug
     end
 
     def self.run_all
@@ -73,5 +73,5 @@ Options:
   end
 end
 
-require 'tillless-restikle/cli/translate_action'
-require 'tillless-restikle/cli/relationships_action'
+require 'restikle/cli/translate_action'
+require 'restikle/cli/relationships_action'

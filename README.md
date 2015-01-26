@@ -1,4 +1,4 @@
-# tillless-restikle
+# restikle
 
 Easily work with Rails routes and schemas in an iOS RestKit+CDQ project.
 
@@ -6,7 +6,7 @@ Easily work with Rails routes and schemas in an iOS RestKit+CDQ project.
 
 Add this line to your application's Gemfile:
 
-    gem 'tillless-restikle'
+    gem 'restikle'
 
 And then execute:
 
@@ -14,15 +14,19 @@ And then execute:
 
 Or install it yourself as:
 
-    $ gem install tillless-restikle
+    $ gem install restikle
 
-## Usage
+## Background
 
 Restikle is designed to make it easy to create all of the runtime integration components necessary for an iOS app using [CoreData](https://developer.apple.com/library/ios/documentation/Cocoa/Conceptual/CoreData/Articles/cdBasics.html), [RestKit](https://github.com/RestKit/RestKit), and [CDQ](https://github.com/infinitered/cdq) to talk to a RESTful Rails back-end.
 
 It does this by analysing the Rails project's `db/schema.rb` file (referred to as 'schema'), along with the output of `rake routes` (referred to as 'routes'). The schema file contains a list of all of the entities that the service is using, and the routes description contains the exposed RESTful resources.
 
 When parsed, these two files provide enough information to create a CDQ schema file for the iOS project, as well as enough information to create all of the runtime mapping configuration necessary to RestKit to bind to that CoreData model. Without this, a programmer using RestKit is forced to create an extraordinary amount of boilerplate code that is hard to maintain. With Restikle, runtime configuration of RestKit can be reduced to about four or five lines of code.
+
+Restikle came about during the development of [Tillless](www.tillless.com), as we looked for ways to make integrating our front0-end iOS apps with a RESTful Rails back-end. Although CoreData, RestKit, and CDQ are all enormously powerful, there's quite a bit of fiddling around to get them working together, and as with many iOS tools, there's also a lot of boilerplate code to write and setup. The intent with Restikle is to made that stuff disappear as much as possible.
+
+## Usage
 
 Restikle has two components: a command line utility for generating the iOS / CoreData / CDQ schema file, and a class called `Restikle::ResourceManager` which is used to load the schema and routes data and create all of the applicable RestKit request and response mappings that enable interaction with the Rails back-end.
 
@@ -65,6 +69,10 @@ $ restikle translate -s resources/schema_rails.rb -e 'spree_' -t resources/route
 The `-e` and `-p` options are useful for removing repeated text from the input documents. For example, the [Spree Commerce](https://github.com/spree/spree) schema file has `spree_` in front of every table definition, and the routes all have `/api/` in front of them. If you need to remove this kind of repeating text, then just supply `-e` or `-p` paramaters to the `translate` command.
 
 For the purposes of this example, the schema is based on the the [Spree Commerce](https://github.com/spree/spree) open-source e-commerce gem. This is used because it is a) very sophisticated, b) a great example of the kinds of complex back-end that you might want to integrate with, and c) freely available as an open-source project.
+
+### Restikle::ResourceManager
+
+Once you have created the schema file, you will want to setup Restikle for runtime use. 
 
 
 ## Contributing

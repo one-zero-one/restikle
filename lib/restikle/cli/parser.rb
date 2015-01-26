@@ -1,4 +1,4 @@
-require "tillless-restikle/version"
+require 'restikle/version'
 require 'fileutils'
 require 'active_support/inflector'
 
