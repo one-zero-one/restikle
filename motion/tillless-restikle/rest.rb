@@ -50,9 +50,13 @@ module Restikle
     end
 
     def self.handle_success(op, res)
+      NSLog " op: #{op}"
+      NSLog "res: #{res}"
     end
 
     def self.handle_failure(op, err)
+      NSLog " op: #{op}"
+      NSLog "err: #{err}"
     end
   end
 end
