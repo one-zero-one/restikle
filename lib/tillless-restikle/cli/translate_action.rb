@@ -9,7 +9,7 @@ module Restikle
   class TranslateAction < Restikle::CommandLine
     HELP_TEXT = %{Usage:
       # Parse a Rails schema file and output a CDQ-compatible schema file.
-      restikle [options] translate  [-s rails_schema] [-e remove_from_entities] [-t rails_routes] [-p remove_from_paths] [-o cdq_schema] [-m models]
+      restikle [options] translate [-s rails_schema] [-e remove_from_entities] [-t rails_routes] [-p remove_from_paths] [-o cdq_schema] [-m models]
 
       Where:
         -s rails_schema              # Rails db/schema.rb file

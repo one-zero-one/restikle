@@ -11,7 +11,7 @@ module Restikle
 
 Commands:
       # Generate CDQ schema file from Rails schema file
-      restikle [options] translate  [-s rails_schema] [-e remove_from_entities] [-t rails_routes] [-p remove_from_paths] [-o cdq_schema] [-m models]
+      restikle [options] translate [-s rails_schema] [-e remove_from_entities] [-t rails_routes] [-p remove_from_paths] [-o cdq_schema] [-m models]
 
       # Parse routes and schema files and automatically determine resource 1:m relationships
       restikle [options] relationships [-s rails_schema] [-e remove_from_entities] [-t rails_routes] [-p remove_from_paths]
