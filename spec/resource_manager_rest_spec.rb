@@ -149,7 +149,6 @@ EOF
     @rsmgr.should != nil
 
     @status = :unknown
-
     @state = State.where(:id).eq(1).first
     Dispatch::Queue.concurrent(:default).async do
       @rsmgr.manager.getObject(
@@ -171,10 +170,15 @@ EOF
         }
       )
     end
+
     wait_max 20.0 do
       @status.should != :failed
       @status.should != :unknown
       @status.should == :success
+
+      @state = State.where(:id).eq(1).first
+      @state.should != nil
+      puts "@state: #{@state}"
     end
   end
 
@@ -182,7 +186,6 @@ EOF
     @rsmgr.should != nil
 
     @status = :unknown
-
     @country = Country.where(:id).eq(1).first
     Dispatch::Queue.concurrent(:default).async do
       @rsmgr.manager.getObject(
@@ -209,6 +212,10 @@ EOF
       @status.should != :failed
       @status.should != :unknown
       @status.should == :success
+
+      @country = Country.where(:id).eq(1).first
+      @country.should != nil
+      puts "@country: #{@country}"
     end
   end
 end
