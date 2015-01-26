@@ -137,7 +137,7 @@ EOF
       Restikle::ResourceManager.entities.size.should > 0
 
       Restikle::ResourceManager.load_routes(
-        file: 'tillless-commerce-api-routes.txt', remove_from_paths: '/api/')
+        file: 'routes_rails.txt', remove_from_paths: '/api/')
         .should == true
       Restikle::ResourceManager.routes.size.should > 0
 

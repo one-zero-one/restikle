@@ -50,7 +50,7 @@ describe Restikle::ResourceManager do
 
     @instr = Restikle::Instrumentor.new
     @instr.load_schema(file: 'schema_rails.rb',                  remove_from_entities: 'spree_')
-    @instr.load_routes(file: 'tillless-commerce-api-routes.txt', remove_from_paths:    '/api/')
+    @instr.load_routes(file: 'routes_rails.txt', remove_from_paths:    '/api/')
     @instr.should != nil
 
     @rsmgr = Restikle::ResourceManager.setup(@instr)
