@@ -7,7 +7,7 @@ module Restikle
     # Depending on whether or not the app is running as standard Ruby,
     # or inside RubyMotion, then load the file using the appropriate
     # platform mechanism.
-    def turn_file_into_data_using_platform_specific_method(file)
+    def turn_file_into_data_using_platform_specific_mechanism(file)
       NSData.dataWithContentsOfFile(NSBundle.mainBundle.pathForResource(file, ofType: nil)).to_str
     end
 

@@ -82,7 +82,7 @@ schema "20150111075238" do
     integer64  :numcode
     boolean    :states_required, default: false
     datetime   :updated_at
-    # has_many   :states                  # MANUAL
+    has_many   :states, optional: true
   end
   entity "CreditCard" do
     integer64  :id, default: -1
@@ -147,6 +147,7 @@ schema "20150111075238" do
     decimal    :promo_total, precision: 10, scale: 2, default: 0.0
     decimal    :included_tax_total, precision: 10, scale: 2, default: 0.0, null: false
     decimal    :pre_tax_amount, precision: 8, scale: 2, default: 0.0
+    belongs_to :order, optional: true
   end
   entity "LogEntry" do
     integer64  :id, default: -1
@@ -163,6 +164,7 @@ schema "20150111075238" do
     integer64  :position, default: 0, null: false
     datetime   :created_at
     datetime   :updated_at
+    has_many   :option_values, optional: true
   end
   entity "OptionTypesPrototype" do
     integer64  :id, default: -1
@@ -177,6 +179,7 @@ schema "20150111075238" do
     integer64  :option_type_id
     datetime   :created_at
     datetime   :updated_at
+    belongs_to :option_type, optional: true
   end
   entity "OptionValuesVariant" do
     integer64  :id, default: -1
@@ -220,6 +223,10 @@ schema "20150111075238" do
     integer64  :canceler_id
     integer64  :store_id
     integer64  :state_lock_version, default: 0, null: false
+    has_many   :line_items, optional: true
+    has_many   :payments, optional: true
+    has_many   :addresses, optional: true
+    has_many   :return_authorizations, optional: true
   end
   entity "OrdersPromotion" do
     integer64  :id, default: -1
@@ -262,6 +269,7 @@ schema "20150111075238" do
     string     :identifier
     string     :cvv_response_code
     string     :cvv_response_message
+    belongs_to :order, optional: true
   end
   entity "Preference" do
     integer64  :id, default: -1
@@ -293,6 +301,7 @@ schema "20150111075238" do
     datetime   :created_at
     datetime   :updated_at
     integer64  :position, default: 0
+    belongs_to :product, optional: true
   end
   entity "Product" do
     integer64  :id, default: -1
@@ -309,6 +318,8 @@ schema "20150111075238" do
     datetime   :updated_at
     boolean    :promotionable, default: true
     string     :meta_title
+    has_many   :variants, optional: true
+    has_many   :product_properties, optional: true
   end
   entity "ProductsPromotionRule" do
     integer64  :id, default: -1
@@ -452,6 +463,7 @@ schema "20150111075238" do
     datetime   :updated_at
     integer64  :stock_location_id
     integer64  :return_authorization_reason_id
+    belongs_to :order, optional: true
   end
   entity "ReturnItem" do
     integer64  :id, default: -1
@@ -567,7 +579,7 @@ schema "20150111075238" do
     string     :abbr
     integer64  :country_id
     datetime   :updated_at
-    # belongs_to :country                 # MANUAL
+    belongs_to :country, optional: true
   end
   entity "StockItem" do
     integer64  :id, default: -1
@@ -578,6 +590,7 @@ schema "20150111075238" do
     datetime   :updated_at
     boolean    :backorderable, default: false
     datetime   :deleted_at
+    belongs_to :stock_location, optional: true
   end
   entity "StockLocation" do
     integer64  :id, default: -1
@@ -597,6 +610,8 @@ schema "20150111075238" do
     boolean    :backorderable_default, default: false
     boolean    :propagate_all_variants, default: true
     string     :admin_name
+    has_many   :stock_movements, optional: true
+    has_many   :stock_items, optional: true
   end
   entity "StockMovement" do
     integer64  :id, default: -1
@@ -607,6 +622,7 @@ schema "20150111075238" do
     datetime   :updated_at
     integer64  :originator_id
     string     :originator_type
+    belongs_to :stock_location, optional: true
   end
   entity "StockTransfer" do
     integer64  :id, default: -1
@@ -660,6 +676,7 @@ schema "20150111075238" do
     datetime   :created_at
     datetime   :updated_at
     integer64  :position, default: 0
+    has_many   :taxons, optional: true
   end
   entity "Taxon" do
     integer64  :id, default: -1
@@ -681,6 +698,7 @@ schema "20150111075238" do
     string     :meta_descrip
     string     :meta_keywords
     integer64  :depth
+    belongs_to :taxonomy, optional: true
   end
   entity "TaxonsPromotionRule" do
     integer64  :id, default: -1
@@ -757,6 +775,7 @@ schema "20150111075238" do
     integer64  :tax_category_id
     datetime   :updated_at
     integer64  :stock_items_count, default: 0, null: false
+    belongs_to :product, optional: true
   end
   entity "ZoneMember" do
     integer64  :id, default: -1

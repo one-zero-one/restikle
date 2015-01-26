@@ -6,18 +6,16 @@ module Restikle
     # :path and :ctrl. If args is a hash, :string must be specified as the value to
     # parse. If :remove_from_paths is speciifed, then that string will be removed
     # uniformly from each route path.
-    def self.new(args={})
-      super(args).tap do |r|
-        if args.instance_of? String
-          r.name, r.verb, r.path, r.ctrl = r.parse_route_string(args)
-        else
-          r.remove_from_paths = args[:remove_from_paths]
-          r.name              = args[:name]
-          r.verb              = args[:verb]
-          r.path              = args[:path]
-          r.ctrl              = args[:ctrl]
-          r.name, r.verb, r.path, r.ctrl = r.parse_route_string(args[:string]) if args[:string]
-        end
+    def initialize(args={})
+      if args.instance_of? String
+        @name, @verb, @path, @ctrl = parse_route_string(args)
+      else
+        @remove_from_paths = args[:remove_from_paths]
+        @name              = args[:name]
+        @verb              = args[:verb]
+        @path              = args[:path]
+        @ctrl              = args[:ctrl]
+        @name, @verb, @path, @ctrl = parse_route_string(args[:string]) if args[:string]
       end
     end
 

@@ -6,13 +6,11 @@ module Restikle
     attr_accessor :routes, :remove_from_paths, :entities, :remove_from_entities
 
     # Create a new Generator
-    def self.new(args={})
-      super(args).tap do |i|
-        i.remove_from_paths    = args[:remove_from_paths]
-        i.remove_from_entities = args[:remove_from_entities]
-        i.entities = []
-        i.routes   = []
-      end
+    def initialize(args={})
+      @remove_from_paths    = args[:remove_from_paths]
+      @remove_from_entities = args[:remove_from_entities]
+      @entities             = []
+      @routes               = []
     end
 
     # Reset the generator back to unused state.
@@ -36,9 +34,11 @@ module Restikle
         routes_data        = args[:data]
       end
 
+      args[:remove_from_paths] = @remove_from_paths unless @remove_from_paths
+
       @routes = []
       if routes_file
-        data = turn_file_into_data_using_platform_specific_method(routes_file)
+        data = turn_file_into_data_using_platform_specific_mechanism(routes_file)
       elsif routes_data
         data = routes_data.to_str
       end
@@ -74,9 +74,11 @@ module Restikle
         schema_data           = args[:data]
       end
 
+      args[:remove_from_entities] = @remove_from_entities unless @remove_from_entities
+
       @entities = []
       if schema_file
-        data = turn_file_into_data_using_platform_specific_method(schema_file)
+        data = turn_file_into_data_using_platform_specific_mechanism(schema_file)
       elsif schema_data
         data = schema_data.to_str
       end
@@ -97,8 +99,8 @@ module Restikle
     # or inside RubyMotion, then load the file using the appropriate
     # platform mechanism. Override in base class if a platform specific
     # file mechanism is needed. See: Restikle::Instrumentor
-    def turn_file_into_data_using_platform_specific_method(file)
-      File.open("path-to-file.tar.gz", "rb").read
+    def turn_file_into_data_using_platform_specific_mechanism(file)
+      File.open(file, "rb").read
     end
 
     # Return an array of related entities for entity name. Result is an array of
@@ -114,14 +116,16 @@ module Restikle
     # any routes that reference those entities, and then define a relationship for each
     # #related_resource in each #route that matches a known #entity.
     def relationships
+      all_ents = @entities.collect {|ent| ent.entity_name}
       @relationships ||= Hash.new.tap do |relns|
         @entities.each do |entity|
           @routes.each do |route|
-            if route.root_resource == entity.entity_name && route.related_resources.size > 0
+            related_resources = route.related_resources & @entities.collect {|e| e.entity_name}
+            if route.root_resource == entity.entity_name && related_resources.size > 0
               if relns[route.root_resource]
-                relns[route.root_resource] += route.related_resources
+                relns[route.root_resource] += related_resources
               else
-                relns[route.root_resource] = route.related_resources
+                relns[route.root_resource] = related_resources
               end
             end
           end
@@ -130,7 +134,16 @@ module Restikle
       end
     end
 
-    # Dump out the paths registred in @routes for each of the @entities
+    # Dump out the inferred relationsips
+    def dump_relationships
+      relns   = relationships
+      padding = relns.keys.group_by(&:length).max[0]
+      relns.each do |reln|
+        puts "  #{reln[0].rjust(padding)}: #{reln[1].join(', ')}"
+      end
+    end
+
+    # Dump out the paths registered in @routes for each of the @entities
     def dump_paths_for_entities
       @entities.each do |entity|
         puts entity.entity_name

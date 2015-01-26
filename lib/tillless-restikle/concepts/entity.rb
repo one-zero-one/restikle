@@ -13,18 +13,16 @@ module Restikle
     # then use CDQ_SCHEMA_MATCHER, and if :string is provided, then attempt to parse that string into an
     # entity. If :remove_from_entities is provided, then each entity will have that string removed from
     # the entity as it is processed.
-    def self.new(args={})
-      super(args).tap do |r|
-        if args.instance_of? String
-          r.entity_matcher ||= DEFAULT_ENTITY_MATCHER
-          r.entity_name    =   r.parse_schema_string(args)
-        else
-          r.remove_from_entities =   args[:remove_from_entities]
-          r.entity_name          =   args[:entity_name]
-          r.entity_matcher       =   args[:entity_matcher]
-          r.entity_matcher       ||= args[:rails] ? RAILS_SCHEMA_MATCHER : (args[:cdq] ? CDQ_SCHEMA_MATCHER : DEFAULT_ENTITY_MATCHER)
-          r.entity_name          ||= r.parse_schema_string(args[:string])
-        end
+    def initialize(args={})
+      if args.instance_of? String
+        @entity_matcher ||= DEFAULT_ENTITY_MATCHER
+        @entity_name    =   parse_schema_string(args)
+      else
+        @remove_from_entities =   args[:remove_from_entities]
+        @entity_name          =   args[:entity_name]
+        @entity_matcher       =   args[:entity_matcher]
+        @entity_matcher       ||= args[:rails] ? RAILS_SCHEMA_MATCHER : (args[:cdq] ? CDQ_SCHEMA_MATCHER : DEFAULT_ENTITY_MATCHER)
+        @entity_name          ||= parse_schema_string(args[:string])
       end
     end
 
