@@ -1,5 +1,5 @@
 require "tillless-restikle/version"
-require 'tillless-restikle/parser'
+require 'tillless-restikle/cli/parser'
 
 module Restikle
   class CommandLine
@@ -7,7 +7,11 @@ module Restikle
       restikle [options] <command> [arguments]
 
 Commands:
-      restikle [options] translate [-r remove_from_entities] [-i rails_schema] [-o cdq_schema]  # Generate CDQ schema file from Rails schema file
+      # Generate CDQ schema file from Rails schema file
+      restikle [options] translate [-r remove_from_entities] [-i rails_schema] [-o cdq_schema]
+
+      # Parse routes and schema files and automatically determine resource 1:m relationships
+      restikle [options] relationships [-s rails_schema] [-r rails_routes]
 
 Options:
     }
@@ -34,8 +38,19 @@ Options:
       end
     end
 
+    def write_output(output, dest)
+      if dest
+        File.open(dest, 'w+') do |file|
+          file << output
+        end
+      else
+        # STDERR.print "\n"
+        puts output
+      end
+    end
+
     def self.run_all
-      actions = { 'translate' => TranslateAction }
+      actions = { 'translate' => TranslateAction, 'relationships' => RelationshipsAction }
 
       cli = self.new
       opts = cli.option_parser
@@ -52,13 +67,14 @@ Options:
 
   class TranslateAction < CommandLine
     HELP_TEXT = %{Usage:
+      # Parse a Rails schema file and output a CDQ-compatible schema file.
       restikle [options] translate [-r remove_from_entities] [-i rails_schema] [-o cdq_schema] [-m models]
-      Parse a Rails schema file and output a CDQ-compatible schema file.
+
       Where:
-        -r remove_from_entities      # text will be striped from each entity name
-        -i rails_schema              # input file for Rails schema
-        -o cdq_schema                # output file for CDQ schema
-        -m models                    # output file for Ruby model classes
+        -r remove_from_entities      # Text will be striped from each entity name
+        -i rails_schema              # Rails db/schema.rb file
+        -o cdq_schema                # Output file for CDQ schema
+        -m models                    # Output file for Ruby model classes
 
 Options:
     }
@@ -118,15 +134,48 @@ Options:
         end
       end
     end
+  end
 
-    def write_output(output, dest)
-      if dest
-        File.open(dest, 'w+') do |file|
-          file << output
+  class RelationshipsAction < CommandLine
+    HELP_TEXT = %{Usage:
+      # Parse routes and schema files and automatically determine resource 1:m relationships
+      restikle [options] relationships [-s rails_schema] [-r rails_routes]
+
+      Where:
+      -s rails_schema              # Rails db/schema.rb file
+      -r rails_routes              # Rails routes config from 'rake routes'
+
+      Options:
+    }
+
+    def option_parser
+      super(HELP_TEXT).tap do |opts|
+        opts.program_name = 'restikle relationships'
+
+        opts.on('-s', '--schema', 'Rails db/schema.rb file') do
+          @rails_schema = ARGV.shift if ARGV.size > 0
         end
-      else
-        # STDERR.print "\n"
-        puts output
+
+        opts.on('-r', '--routes', "Rails routes config from 'rake routes'") do
+          @rails_routes = ARGV.shift if ARGV.size > 0
+        end
+      end
+    end
+
+    def run
+      opts = option_parser
+      opts.order!
+
+      if @debug
+        STDERR.puts "@rails_schema: #{@rails_schema}"
+        STDERR.puts "@rails_routes: #{@rails_routes}"
+      end
+
+      unless singleton_options_passed
+        result = false
+        unless result
+          puts opts
+        end
       end
     end
   end

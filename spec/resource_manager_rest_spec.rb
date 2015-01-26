@@ -153,22 +153,22 @@ EOF
     @state = State.where(:id).eq(1).first
     Dispatch::Queue.concurrent(:default).async do
       @rsmgr.manager.getObject(
-      @state,
-      path: 'states/1',
-      parameters: nil,
-      success: ->(op,res) {
-        puts "\n op: #{op}"
-        puts   "res: #{res}"
-        cdq.save
-        @status = :success
-        resume
-      },
-      failure: ->(op,err) {
-        puts "\n op: #{op}"
-        puts   "err: #{err}"
-        @status = :failed
-        resume
-      }
+        @state,
+        path: 'states/1',
+        parameters: nil,
+        success: ->(op,res) {
+          puts "\n op: #{op}"
+          puts   "res: #{res}"
+          cdq.save
+          @status = :success
+          resume
+        },
+        failure: ->(op,err) {
+          puts "\n op: #{op}"
+          puts   "err: #{err}"
+          @status = :failed
+          resume
+        }
       )
     end
     wait_max 20.0 do
@@ -186,22 +186,22 @@ EOF
     @country = Country.where(:id).eq(1).first
     Dispatch::Queue.concurrent(:default).async do
       @rsmgr.manager.getObject(
-      @country,
-      path: 'countries/1',
-      parameters: nil,
-      success: ->(op,res) {
-        puts "\n op: #{op}"
-        puts   "res: #{res}"
-        cdq.save
-        @status = :success
-        resume
-      },
-      failure: ->(op,err) {
-        puts "\n op: #{op}"
-        puts   "err: #{err}"
-        @status = :failed
-        resume
-      }
+        @country,
+        path: 'countries/1',
+        parameters: nil,
+        success: ->(op,res) {
+          puts "\n op: #{op}"
+          puts   "res: #{res}"
+          cdq.save
+          @status = :success
+          resume
+        },
+        failure: ->(op,err) {
+          puts "\n op: #{op}"
+          puts   "err: #{err}"
+          @status = :failed
+          resume
+        }
       )
     end
 
