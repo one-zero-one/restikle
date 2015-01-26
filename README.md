@@ -94,6 +94,7 @@ For more information on runtime use, please see the test cases in `spec/`.
 
 * *Performance* of the assembly step to create the RestKit mappings (via Restikle::ResourceManager#build_mappings) is incredibly slow (at leat for the example schema and routes files). This can almost certainly be tidied up, and I will look to do that once I have more of the functionality bedded down.
 * There are a couple of issues with the generated *CDQ / xcdatamodel* schema files that have something to do with the way that inverse relationships are captured. I have not been able to work them out yet. Stay tuned.
+* I am currently using `cocoapods:0.36.0.beta.1` which fixes a RubyMotion linking problem with RestKit. However, there appears to be a bug with this, or perhaps in the interaction between `cocoapods:0.36.0.beta.1` and `motion-cocoapods:1.7.0` that causes an error when attempting to create and install the gem. 
 
 
 ## Contributing
