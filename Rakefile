@@ -45,6 +45,7 @@ Motion::Project::App.setup do |app|
 
   app.pods do
     pod 'RestKit'
+    pod 'AFNetworking', '~> 1.3.4'
   end
 end
 task :"build:simulator" => :"schema:build"
