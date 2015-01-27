@@ -6,10 +6,15 @@ require 'motion/project/template/gem/gem_tasks'
 require 'bundler'
 require 'bundler/gem_tasks'
 
-if ARGV.join(' ') =~ /spec/
-  Bundler.require :default, :spec
-else
-  Bundler.require
+begin
+  if ARGV.join(' ') =~ /spec/
+    Bundler.require :default, :spec
+  else
+    Bundler.require
+  end
+rescue Exception => e
+  puts "Exception processing Bundler.require:"
+  puts e
 end
 
 require 'ib'
