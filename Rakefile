@@ -19,6 +19,7 @@ end
 
 require 'ib'
 require 'cdq'
+require 'rubygems'
 require 'motion-cocoapods'
 require 'bubble-wrap'
 require 'bubble-wrap/all'
@@ -44,8 +45,8 @@ Motion::Project::App.setup do |app|
   end
 
   app.pods do
-    pod 'RestKit'
     pod 'AFNetworking', '~> 1.3.4'
+    pod 'RestKit'
   end
 end
 task :"build:simulator" => :"schema:build"
