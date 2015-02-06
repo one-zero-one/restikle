@@ -22,7 +22,7 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency 'motion-support',             '~> 0.2.6'
   # spec.add_dependency 'cocoapods',                '~> 0.35.0'
-  spec.add_dependency 'cocoapods',                  '~> 0.36.0.beta.1'
+  spec.add_dependency 'cocoapods',                  '~> 0.36.0.beta.2'
   spec.add_dependency 'xcodeproj',                  '~> 0.21.0'
   spec.add_dependency 'motion-cocoapods',           '~> 1.7.0'
   spec.add_dependency 'bubble-wrap',                '~> 1.7.1'
