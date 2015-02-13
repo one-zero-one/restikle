@@ -40,7 +40,7 @@ module Restikle
       return nil unless @path
       if @path =~ /:/
         route_resource = @path.scan(/(\w*)\/:(\w*)/)
-        route_resource ? route_resource[0][0].singularize.camelize : nil
+        route_resource && route_resource[0] ? route_resource[0][0].singularize.camelize : nil
       else
         @path.singularize.camelize
       end
