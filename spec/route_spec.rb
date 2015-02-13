@@ -77,4 +77,28 @@ describe Restikle::Route do
     related_resources[2].should == 'Fourth'
   end
 
+  it 'should work with several troublesome strings' do
+    s1 = "          spree_user_session POST   /user/spree_user/sign_in(.:format)                                            spree/user_sessions#create     "
+    s2 = "                             GET    /user/spree_user/sign_in(.:format)                                            spree/user_sessions#new        "
+    e1 = s1.split
+    e2 = s2.split
+    e1.size.should == 4
+    e2.size.should == 3
+
+    e2.unshift('')
+    e2.size.should == 4
+
+    troublesome_strings = [
+"      new_spree_user_session GET    /user/spree_user/sign_in(.:format)                                            spree/user_sessions#new        ",
+"          spree_user_session POST   /user/spree_user/sign_in(.:format)                                            spree/user_sessions#create     ",
+"                             GET    /user/spree_user/sign_in(.:format)                                            spree/user_sessions#new        ",
+"        addresses_admin_user GET    /admin/users/:id/addresses(.:format)                                          spree/admin/users#addresses    ",
+"                             PUT    /admin/users/:id/addresses(.:format)                                          spree/admin/users#addresses    "
+    ]
+    troublesome_strings.each do |ts|
+      route = Restikle::Route.new(ts)
+      route.should != nil
+    end
+  end
+
 end

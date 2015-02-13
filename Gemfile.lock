@@ -2,6 +2,7 @@ PATH
   remote: .
   specs:
     restikle (0.0.1)
+      activesupport (~> 3.2)
       bubble-wrap (~> 1.7.1)
       cdq (~> 0.1.11)
       cocoapods (~> 0.36.0.beta.2)
@@ -88,7 +89,6 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  activesupport (~> 3.2)
   bundler (~> 1.7.9)
   motion_print
   rake (~> 10.4.2)

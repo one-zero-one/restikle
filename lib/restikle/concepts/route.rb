@@ -22,7 +22,18 @@ module Restikle
     # Extra :name, :verb, :path and :ctrl from str.
     def parse_route_string(str)
       elements = str.split
-      elements.unshift('') if elements.size == 4
+
+      # Watch out for partially formed routes. Might be missing '{format='json'}' off
+      # the rhs, or might be missing a name if it's a subsequent route for a different
+      # verb. If so, add empty items to front and back to ensure that elements.size==5
+      case elements.size
+      when 3                      # No format string '{format='json'}' OR verb present
+        elements << ''
+        elements.unshift('')
+      when 4                      # No verb present
+        elements.unshift('')
+      end
+
       name, verb, path, ctrl = *elements
       name ||= ''
       verb ||= ''
@@ -78,7 +89,7 @@ module Restikle
       @path.match /\/new$/
     end
 
-    # True if the route is for one of hte special Rails routes (/new or /edit)
+    # True if the route is for one of the special Rails routes (/new or /edit)
     def special_route?
       @path.match /\/(edit|new)$/
     end
