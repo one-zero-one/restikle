@@ -57,7 +57,7 @@ module Restikle
         instrumentor.build_mappings(_manager)
       end
 
-      # Number of RestKit mappings created on last run, or 0 if
+      # Number of RestKit mappings created on last run, or -1 if
       # #build_mappings has not been called.
       def mappings_created
         instrumentor.mappings_created

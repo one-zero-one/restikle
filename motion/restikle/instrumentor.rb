@@ -42,10 +42,10 @@ module Restikle
       true
     end
 
-    # Number of RestKit mappings created on last run, or 0 if
+    # Number of RestKit mappings created on last run, or -1 if
     # #build_mappings has not been called.
     def mappings_created
-      @mappings_created || 0
+      @mappings_created || -1
     end
 
     def cdq_attributes_for_entity(entity_name)
