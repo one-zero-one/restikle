@@ -109,7 +109,7 @@ module Restikle
       end
 
       def set_api_ver(av)
-        @api_ver = "#{av}#{av[-1] == '/' ? '' : '/'}"   # add trailing / if it's not there
+        @api_ver = "#{av}#{av[-1] == '/' ? '' : '/'}"   # add trailing / if it's not there]
         reset!
         @api_ver
       end
