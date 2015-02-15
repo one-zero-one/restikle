@@ -31,16 +31,28 @@ describe Restikle::ResourceManager do
     @rsmgr.headers['X-Spree-Token'].should != nil
   end
 
-  it 'should allow for the API url to be set' do
-    api_url = 'http://localhost:3200/api/'
+  it 'should allow for the API host to be set' do
+    api_host = 'http://localhost:3200' # note: no tailing /, but should add it
 
-    # NOTE: set_api_url will call ResourceManager#reset!, which will
+    # NOTE: set_api_host will call ResourceManager#reset!, which will
     # bork any existing instrumentor that is set up (because of the
     # relationship between the Instrumentor and RestKit).
     @rsmgr.should != nil
-    @rsmgr.api_url.should != nil
-    @rsmgr.set_api_url api_url
-    @rsmgr.api_url.should == api_url
+    @rsmgr.api_host.should != nil
+    @rsmgr.set_api_host api_host
+    @rsmgr.api_host.should == "#{api_host}/"
+  end
+
+  it 'should allow for the API ver to be set' do
+    api_ver = 'api' # note: no tailing /, but should add it
+
+    # NOTE: set_api_ver will call ResourceManager#reset!, which will
+    # bork any existing instrumentor that is set up (because of the
+    # relationship between the Instrumentor and RestKit).
+    @rsmgr.should != nil
+    @rsmgr.api_ver.should != nil
+    @rsmgr.set_api_ver api_ver
+    @rsmgr.api_ver.should == "#{api_ver}/"
   end
 
   it 'should work with the Instrumentor' do

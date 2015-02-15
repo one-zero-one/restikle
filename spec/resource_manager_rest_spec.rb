@@ -117,12 +117,12 @@ EOF
       JSON_FOR_GET_COUNTRIES_1.should != nil
     end
 
-    it 'should have the api_url set to something sensible' do
-      api_url = URL_FOR_SPECS
+    it 'should have the api_host set to something sensible' do
+      api_host = URL_FOR_SPECS
 
-      Restikle::ResourceManager.api_url.should != nil
-      Restikle::ResourceManager.set_api_url api_url
-      Restikle::ResourceManager.api_url.should == api_url
+      Restikle::ResourceManager.api_host.should != nil
+      Restikle::ResourceManager.set_api_host api_host
+      Restikle::ResourceManager.api_host.should == api_host
     end
 
     it 'should exist and be setup' do

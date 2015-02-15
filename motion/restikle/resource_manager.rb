@@ -8,7 +8,7 @@ module Restikle
       end
 
       def setup(instr=nil)
-        # NSLog "Restikle::ResourceManager.setup: #{api_url}"
+        # NSLog "Restikle::ResourceManager.setup: #{api_host}"
         RKObjectManager.sharedManager = _manager
         @instrumentor = instr
 
@@ -91,12 +91,27 @@ module Restikle
       end
 
       def api_url
-        @api_url ||= "http://api.tillless.com/api"
+        "#{api_host}#{api_ver}"
       end
 
-      def set_api_url(au)
-        @api_url = "#{au}#{au[-1] == '/' ? '' : '/'}"   # add trailing / if it's not there
+      def api_host
+        @api_host ||= "http://api.tillless.com/"
+      end
+
+      def set_api_host(au)
+        @api_host = "#{au}#{au[-1] == '/' ? '' : '/'}"   # add trailing / if it's not there
         reset!
+        @api_host
+      end
+
+      def api_ver
+        @api_ver ||= 'api/'
+      end
+
+      def set_api_ver(av)
+        @api_ver = "#{av}#{av[-1] == '/' ? '' : '/'}"   # add trailing / if it's not there
+        reset!
+        @api_ver
       end
 
       def manager
@@ -128,7 +143,7 @@ module Restikle
       private
 
       def _manager
-        @manager ||= RKObjectManager.managerWithBaseURL(NSURL.URLWithString(api_url)).tap do |m|
+        @manager ||= RKObjectManager.managerWithBaseURL(NSURL.URLWithString(api_host)).tap do |m|
           m.managedObjectStore = _store
         end
         @manager
