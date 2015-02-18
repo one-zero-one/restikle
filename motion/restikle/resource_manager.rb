@@ -15,6 +15,9 @@ module Restikle
         # Configure pagination settings
         _manager.setPaginationMapping(default_pagination_mapping)
 
+        # Set up the API Token
+        add_headers('X-Spree-Token' => '774d9d41afd87ca9c8589c15312eb4bf349bcf9a1fdf958d')
+
         self
       end
 
@@ -67,27 +70,28 @@ module Restikle
         @pagination_mapping ||= begin
           @pagination_mapping = RKObjectMapping.mappingForClass(RKPaginator)
           @pagination_mapping.addAttributeMappingsFromDictionary({
-            "pagination.per_page"  => "perPage",
-            "pagination.pages"     => "pageCount",
-            "pagination.count"     => "objectCount",
-            "pagination.current"   => "currentPage"
-            })
+            "per_page"     => "perPage",
+            "pages"        => "pageCount",
+            "count      "  => "objectCount",
+            "current_page" => "currentPage"
+          })
         end
         @pagination_mapping
       end
 
-      def default_pagination_request_string
+      def default_pagination_request
         'page=:currentPage&per_page=:perPage'
       end
 
-      def pagination_request_string_for_entity(entity)
-        "#{entity}?#{default_pagination_request_string}"
+      def pagination_request(entity)
+        pagination_request(entity, {})
       end
 
-      def pagination_request_string_for_entity(entity, with_params: params)
+      def pagination_request(entity, params)
+        params ||= {}
         prstr =  "#{entity}?"
         params.each {|k,v| prstr << "#{k}=#{v}&"}
-        prstr << "#{default_pagination_request_string}"
+        prstr << "#{default_pagination_request}"
       end
 
       def api_url
