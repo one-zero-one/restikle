@@ -84,7 +84,7 @@ module Restikle
               response_descriptor: {
                 response_mapping: rk_mapping_for_entity_for_name(entity.entity_name, related_entities),
                 path_pattern:     route.path,
-                key_path:         '',
+                key_path:         route.key_path,
                 method:           rk_request_method_for(route.verb),
                 status_codes:     RKStatusCodeIndexSetForClass(RKStatusCodeClassSuccessful)
               }

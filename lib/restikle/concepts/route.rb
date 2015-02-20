@@ -94,6 +94,17 @@ module Restikle
       @path.match /\/(edit|new)$/
     end
 
+    # Inspect the path and work out what the expected key_path of the response
+    # should be. If path does not end in '../<items>/:id' then assume '<items>'
+    # is the key path, otherwise, assume ''.
+    def key_path
+      if @path.match(/(\w*)\/:id$/).nil?
+        @path.match(/(\w*)$/)[1]
+      else
+        ''
+      end
+    end
+
     # Human readable output
     def to_s
       "#{@name}, #{@verb}, #{@path}, #{@ctrl}"
