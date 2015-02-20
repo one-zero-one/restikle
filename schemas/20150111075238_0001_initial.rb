@@ -310,7 +310,7 @@ schema "20150111075238" do
     datetime   :available_on
     datetime   :deleted_at
     string     :slug
-    string     :meta_descrip
+    string     :meta_description
     string     :meta_keywords
     integer64  :tax_category_id
     integer64  :shipping_category_id
@@ -638,7 +638,7 @@ schema "20150111075238" do
     integer64  :id, default: -1
     string     :name
     string     :url
-    string     :meta_descrip
+    string     :meta_description
     string     :meta_keywords
     string     :seo_title
     string     :mail_from_address
@@ -695,7 +695,7 @@ schema "20150111075238" do
     datetime   :created_at
     datetime   :updated_at
     string     :meta_title
-    string     :meta_descrip
+    string     :meta_description
     string     :meta_keywords
     integer64  :depth
     belongs_to :taxonomy, optional: true

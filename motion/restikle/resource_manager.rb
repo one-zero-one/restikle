@@ -16,6 +16,7 @@ module Restikle
         _manager.setPaginationMapping(default_pagination_mapping)
 
         # Set up the API Token
+        # TODO: Fix this hardcoded token
         add_headers('X-Spree-Token' => '774d9d41afd87ca9c8589c15312eb4bf349bcf9a1fdf958d')
 
         self
