@@ -760,6 +760,7 @@ schema "20150111075238" do
   end
   entity "Variant" do
     integer64  :id, default: -1
+    string     :string, default: "", null: true 
     string     :sku, default: "", null: false
     decimal    :weight, precision: 8, scale: 2, default: 0.0
     decimal    :height, precision: 8, scale: 2

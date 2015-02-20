@@ -33,7 +33,5 @@ class AppDelegate
     print "Build mappings: "
     Restikle::ResourceManager.build_mappings
     print "#{Restikle::ResourceManager.mappings_created} mappings created\n"
-
-    print "Complete.\n"
   end
 end
