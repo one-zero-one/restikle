@@ -114,4 +114,42 @@ describe Restikle::Instrumentor do
     instr.entities.size.should == 0
     instr.routes.size.should == 0
   end
+
+
+  it 'should be able to transform RM reserved words in an attribute mapping hash' do
+    reserved_words = {
+      'alice'       => 'ALICE',
+      'bob'         => 'BOB'
+    }
+    input_attrs1 = {
+      'alice'       => 'alice',
+      'bob'         => 'bob',
+      'description' => 'description'
+    }
+    output_attrs1 = {
+      'ALICE'       => 'alice',
+      'BOB'         => 'bob',
+      'description' => 'description'
+    }
+    input_attrs2 = {
+      'alice'       => 'alice',
+      'bob'         => 'bob',
+      'descrip'     => 'descrip'
+    }
+    output_attrs2 = {
+      'alice'       => 'alice',
+      'bob'         => 'bob',
+      'description' => 'descrip'
+    }
+    instr = Restikle::Instrumentor.new
+
+    # Use local reserved word list
+    instr.xform_attribute_hash_for_rm_reserved_words(input_attrs1, reserved_words)
+    input_attrs1.should == output_attrs1
+
+    # Use default reserved word list: Restikle::Instrumentor::RM_RESERVED_WORDS
+    instr.xform_attribute_hash_for_rm_reserved_words(input_attrs2)
+    input_attrs2.should == output_attrs2
+  end
+
 end

@@ -96,15 +96,16 @@ module Restikle
     end
 
     def rk_mapping_for_entity_for_name(entity_name, related_entities=[])
+      entity_name_attr_hash = attributes_for_entity_as_hash(entity_name)
       RKEntityMapping.mappingForEntityForName(entity_name, inManagedObjectStore: store).tap do |outer|
-        outer.addAttributeMappingsFromArray(attributes_for_entity(entity_name))
+        outer.addAttributeMappingsFromDictionary(entity_name_attr_hash)
         related_entities.each do |related_entity|
           # Only build property mappings for related_entities that we know
           # have been defined from the currently loaded schema, otherwise
           # RestKit won't be able to map onto those entities
           if entities.any? { |ent| ent.entity_name == related_entity}
             RKEntityMapping.mappingForEntityForName(related_entity, inManagedObjectStore: store).tap do |inner|
-              inner.addAttributeMappingsFromArray(attributes_for_entity(related_entity))
+              inner.addAttributeMappingsFromDictionary(entity_name_attr_hash)
               outer.addPropertyMapping(
                 RKRelationshipMapping.relationshipMappingFromKeyPath(
                   related_entity.pluralize.underscore,
@@ -118,11 +119,43 @@ module Restikle
       end
     end
 
-    def attributes_for_entity(entity_name)
+    # Creates a simple array of attributes for an entity
+    def attributes_for_entity_as_array(entity_name)
       attrs  = []
       entity = CDQ.cdq.models.current.entities.find {|e| e.name == entity_name}
       entity.attributesByName.each { |attr| attrs << attr[0] } if entity
       attrs
+    end
+
+    # Creates a hash of attribute mappings
+    def attributes_for_entity_as_hash(entity_name)
+      attrs  = {}
+      entity = CDQ.cdq.models.current.entities.find {|e| e.name == entity_name}
+      entity.attributesByName.each { |attr| attrs[attr[0]] = attr[0] } if entity
+      xform_attribute_hash_for_rm_reserved_words(attrs)
+      attrs
+    end
+
+
+    # List of words that are reserved in RM, and so can't be attribute names for entities
+    RM_RESERVED_WORDS = {
+      'descrip' => 'description'
+    }
+    # Given a hash, go through and replace any 'to' value that is in the map of reserved
+    # words. Will use RM_RESERVED_WORDS if reserved_words is nil.
+    def xform_attribute_hash_for_rm_reserved_words(hash, reserved_words=nil)
+      reserved_words ||= RM_RESERVED_WORDS
+      to_del = []
+      to_add = []
+      hash.each do |from,to|
+        if reserved_words.has_key?(to)
+          to_del << from
+          to_add << { reserved_words[to] => to }
+        end
+      end
+      to_del.each {|k| hash.delete k }
+      to_add.each {|k| hash.merge! k }
+      hash
     end
 
     # Get a reference to the current ResourceManager's RKObjectManager

@@ -118,25 +118,12 @@ describe Restikle::Route do
     }
     route1 = Restikle::Route.new(r1data)
     route2 = Restikle::Route.new(r2data)
-
     r1_match = route1.path.match(/(\w*)\/:id$/)
     r2_match = route2.path.match(/(\w*)\/:id$/)
-
     r1_key_path = route1.key_path
     r2_key_path = route2.key_path
-
-    puts ' '
-    puts "     route1: #{route1.inspect}"
-    puts "      match: #{r1_match} 0: #{r1_match[0]}, 1: #{r1_match[1]}, 2: #{r1_match[2]}"
-    puts "r1_key_path: #{r1_key_path}"
-    puts "     route2: #{route2.inspect}"
-    puts "      match: #{r2_match}" # should be nil
-    puts "r2_key_path: #{r2_key_path}"
-    puts ' '
-
     r1_key_path.should == ''
     r2_key_path.should == 'products'
-
   end
 
 end
