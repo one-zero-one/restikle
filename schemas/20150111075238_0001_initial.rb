@@ -760,7 +760,6 @@ schema "20150111075238" do
   end
   entity "Variant" do
     integer64  :id, default: -1
-    string     :string, default: "", null: true 
     string     :sku, default: "", null: false
     decimal    :weight, precision: 8, scale: 2, default: 0.0
     decimal    :height, precision: 8, scale: 2
@@ -777,6 +776,11 @@ schema "20150111075238" do
     datetime   :updated_at
     integer64  :stock_items_count, default: 0, null: false
     belongs_to :product, optional: true
+    
+    # NOTE: Added to support REST response for /products and /variants
+    string     :name, default: "", null: true
+    string     :slug, default: "", null: true
+    string     :descrip, default: "", null: true
   end
   entity "ZoneMember" do
     integer64  :id, default: -1
