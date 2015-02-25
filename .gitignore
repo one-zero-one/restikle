@@ -149,3 +149,8 @@ pkg/
 *.xcdatamodeld
 resources/*.xcdatamodel
 resources/*.xcdatamodeld
+
+
+####
+# Provisioning Profiles
+provisioning/
