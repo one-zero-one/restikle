@@ -1,9 +1,9 @@
 # -*- encoding: utf-8 -*-
-require File.expand_path('../lib/restikle/version', __FILE__)
+require File.expand_path('../lib/tillless-restikle/version', __FILE__)
 
 Gem::Specification.new do |spec|
   spec.name          = "tillless-restikle"
-  spec.version       = Restikle::VERSION
+  spec.version       = Tillless::Restikle::VERSION
   spec.authors       = ["tillless", "matthewsinclair"]
   spec.email         = ["matthew.sinclair@tillless.com"]
   spec.description   = %q{Easily work with Rails routes and schemas in an iOS RestKit+CDQ project.}

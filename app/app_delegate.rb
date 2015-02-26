@@ -18,19 +18,22 @@ class AppDelegate
 
   def handle_restikle_setup
     NSLog " "
-    print "Restikle setup: "
-    Restikle::ResourceManager.setup
-    print "Initialized\n"
+    print "Restikle setup:\n"
 
-    print "Loading schema: "
+    print "  using API endpoint: "
+    Restikle::ResourceManager.set_api_host 'http://localhost:3200/api'
+    Restikle::ResourceManager.setup
+    print "#{Restikle::ResourceManager.api_host}\n"
+
+    print "      loading schema: "
     Restikle::ResourceManager.load_schema(file: 'schema_rails.rb', remove_from_entities: 'spree_')
     print "#{Restikle::ResourceManager.entities.size} entities processed\n"
 
-    print "Loading routes: "
+    print "      loading routes: "
     Restikle::ResourceManager.load_routes(file: 'routes_rails.txt', remove_from_paths: '/api/')
     print "#{Restikle::ResourceManager.routes.size} routes processed\n"
 
-    print "Build mappings: "
+    print "   building mappings: "
     Restikle::ResourceManager.build_mappings
     print "#{Restikle::ResourceManager.mappings_created} mappings created\n"
   end

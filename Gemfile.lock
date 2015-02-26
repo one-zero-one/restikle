@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    restikle (0.0.1)
+    tillless-restikle (0.0.1)
       activesupport
       bubble-wrap
       cdq
@@ -92,5 +92,5 @@ DEPENDENCIES
   bundler
   motion_print
   rake
-  restikle!
+  tillless-restikle!
   webstub
