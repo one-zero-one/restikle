@@ -2,7 +2,7 @@
 require File.expand_path('../lib/restikle/version', __FILE__)
 
 Gem::Specification.new do |spec|
-  spec.name          = "restikle"
+  spec.name          = "tillless-restikle"
   spec.version       = Restikle::VERSION
   spec.authors       = ["tillless", "matthewsinclair"]
   spec.email         = ["matthew.sinclair@tillless.com"]
